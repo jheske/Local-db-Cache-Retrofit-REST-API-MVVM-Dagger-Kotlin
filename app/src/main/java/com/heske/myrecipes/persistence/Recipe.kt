@@ -37,6 +37,6 @@ data class Recipe(
     val publisher: String,
     val image_url: String,
     val social_rank: Float,
-    //val ingredients: List<String>,
+    val ingredients: List<String>,
     val timestamp: Int
 )

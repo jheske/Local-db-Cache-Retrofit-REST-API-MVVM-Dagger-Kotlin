@@ -1,8 +1,8 @@
 package com.heske.myrecipes.persistence
 
+import android.util.Log
 import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.heske.myrecipes.util.TAG
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -26,25 +26,39 @@ import com.google.gson.reflect.TypeToken
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 object Converters {
-    @JvmStatic
     @TypeConverter
-    fun fromString(value: String): Array<String>? {
-        val listType = object : TypeToken<Array<String>>() {
-
-        }.type
-        return Gson().fromJson<Array<String>>(value, listType)
+    @JvmStatic
+    fun stringToList(data: String?): List<String>? {
+        return data?.let {
+            it.split(",").map {
+                try {
+                    it.toString()
+                } catch (ex: NumberFormatException) {
+                    Log.d(TAG, "Cannot convert $ex to string")
+                    null
+                }
+            }
+        }?.filterNotNull()
     }
 
     @TypeConverter
     @JvmStatic
-    fun arrayListToString(list: List<String>?): String? {
-        val gson = Gson()
-        return gson.toJson(list)    }
-
-//    @JvmStatic
-//    @TypeConverter
-//    fun fromArrayList(list: Array<String>): String {
-//        val gson = Gson()
-//        return gson.toJson(list)
-//    }
+    fun listToString(list: List<String>?): String? {
+        return list?.joinToString(",")
+    }
 }
+
+/*
+    @TypeConverter
+    public static String[] fromString(String value){
+        Type listType = new TypeToken<String[]>(){}.getType();
+        return new Gson().fromJson(value, listType);
+    }
+
+    @TypeConverter
+    public static String fromArrayList(String[] list){
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        return json;
+}
+ */

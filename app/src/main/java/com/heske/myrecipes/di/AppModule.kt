@@ -8,8 +8,10 @@ import com.heske.myrecipes.requests.responses.RecipeApi
 import com.heske.myrecipes.util.*
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
@@ -37,9 +39,24 @@ import javax.inject.Singleton
 class AppModule {
     @Singleton
     @Provides
-    fun provideRetrofitService(): RecipeApi {
+    internal fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            // establish connection to server
+            .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
+            // time between each byte read from the server
+            .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+            // time between each byte sent to server
+            .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(false)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRetrofitService(client: OkHttpClient): RecipeApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .build()

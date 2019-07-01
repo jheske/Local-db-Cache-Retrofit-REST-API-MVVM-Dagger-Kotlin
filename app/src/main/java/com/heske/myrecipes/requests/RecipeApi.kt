@@ -1,9 +1,11 @@
-package com.heske.myrecipes.persistence
+package com.heske.myrecipes.requests
 
-import androidx.annotation.NonNull
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.TypeConverters
+import androidx.lifecycle.LiveData
+import com.heske.myrecipes.requests.responses.ApiResponse
+import com.heske.myrecipes.requests.responses.RecipeResponse
+import com.heske.myrecipes.requests.responses.RecipeSearchResponse
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -26,17 +28,18 @@ import androidx.room.TypeConverters
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-@Entity(
-    tableName = "recipes",
-    primaryKeys = ["recipe_id"]
-)
-@TypeConverters(Converters::class)
-data class Recipe(
-    val recipe_id: String,
-    val title: String,
-    val publisher: String,
-    val image_url: String,
-    val social_rank: Float,
-    val ingredients: List<String>,
-    var timestamp: Int
-)
+interface RecipeApi {
+    @GET("api/search")
+    fun searchRecipe(
+        @Query("key") key: String,
+        @Query("q") query: String,
+        @Query("page") page: String
+    ): LiveData<ApiResponse<RecipeSearchResponse>>
+
+    // GET RECIPE REQUEST
+    @GET("api/get")
+    fun getRecipe(
+        @Query("key") key: String,
+        @Query("rId") recipe_id: String
+    ): LiveData<ApiResponse<RecipeResponse>>
+}

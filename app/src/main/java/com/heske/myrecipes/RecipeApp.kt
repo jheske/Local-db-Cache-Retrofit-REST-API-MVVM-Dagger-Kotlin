@@ -1,8 +1,11 @@
-package com.heske.myrecipes.requests.responses
+package com.heske.myrecipes
 
-import androidx.lifecycle.LiveData
-import retrofit2.http.GET
-import retrofit2.http.Query
+import android.app.Activity
+import android.app.Application
+import com.heske.myrecipes.di.AppInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
+import javax.inject.Inject
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -25,18 +28,17 @@ import retrofit2.http.Query
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-interface RecipeApi {
-    @GET("api/search")
-    fun searchRecipe(
-        @Query("key") key: String,
-        @Query("q") query: String,
-        @Query("page") page: String
-    ): LiveData<ApiResponse<RecipeSearchResponse>>
+class RecipeApp : Application(), HasActivityInjector {
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
-    // GET RECIPE REQUEST
-    @GET("api/get")
-    fun getRecipe(
-        @Query("key") key: String,
-        @Query("rId") recipe_id: String
-    ): LiveData<ApiResponse<RecipeResponse>>
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG) {
+            //Timber.plant(Timber.DebugTree())
+        }
+        AppInjector.init(this)
+    }
+
+    override fun activityInjector() = dispatchingAndroidInjector
 }

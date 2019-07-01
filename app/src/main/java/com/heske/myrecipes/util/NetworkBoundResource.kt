@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.heske.myrecipes.repositories
+package com.heske.myrecipes.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.heske.myrecipes.AppExecutors
-import com.heske.myrecipes.models.Resource
 import com.heske.myrecipes.requests.responses.*
 
 /**

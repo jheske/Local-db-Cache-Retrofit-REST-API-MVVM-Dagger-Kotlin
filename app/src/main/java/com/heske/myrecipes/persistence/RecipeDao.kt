@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import com.heske.myrecipes.models.Recipe
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 

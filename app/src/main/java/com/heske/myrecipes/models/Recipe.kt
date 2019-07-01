@@ -1,8 +1,8 @@
-package com.heske.myrecipes.persistence
+package com.heske.myrecipes.models
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import com.heske.myrecipes.models.Recipe
+import androidx.room.Entity
+import androidx.room.TypeConverters
+import com.heske.myrecipes.persistence.Converters
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -25,9 +25,17 @@ import com.heske.myrecipes.models.Recipe
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-@Database(entities = [Recipe::class], version = 1)
-abstract class RecipeDatabase : RoomDatabase() {
-    abstract val recipeDao: RecipeDao
-}
-
-private lateinit var INSTANCE: RecipeDatabase
+@Entity(
+    tableName = "recipes",
+    primaryKeys = ["recipe_id"]
+)
+@TypeConverters(Converters::class)
+data class Recipe(
+    val recipe_id: String,
+    val title: String,
+    val publisher: String,
+    val image_url: String,
+    val social_rank: Float,
+    val ingredients: List<String>,
+    var timestamp: Int
+)

@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.heske.myrecipes.models
 
-import com.heske.myrecipes.models.Status.*
-/**
- * A generic class that holds a value with its loading status.
- * @param <T>
-</T> */
-data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
-    companion object {
-        fun <T> success(data: T?): Resource<T> {
-            return Resource(SUCCESS, data, null)
-        }
+package com.heske.myrecipes.di
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-        fun <T> error(msg: String, data: T?): Resource<T> {
-            return Resource(ERROR, data, msg)
-        }
-
-        fun <T> loading(data: T?): Resource<T> {
-            return Resource(LOADING, data, null)
-        }
-    }
+@Suppress("unused")
+@Module
+abstract class FragmentBuildersModule {
+//    @ContributesAndroidInjector
+//    abstract fun contributeRepoFragment(): RepoFragment
+//
+//    @ContributesAndroidInjector
+//    abstract fun contributeUserFragment(): UserFragment
+//
+//    @ContributesAndroidInjector
+//    abstract fun contributeSearchFragment(): SearchFragment
 }

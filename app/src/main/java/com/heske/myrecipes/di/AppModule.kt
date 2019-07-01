@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.heske.myrecipes.persistence.RecipeDao
 import com.heske.myrecipes.persistence.RecipeDatabase
-import com.heske.myrecipes.requests.responses.RecipeApi
+import com.heske.myrecipes.requests.RecipeApi
 import com.heske.myrecipes.util.*
 import dagger.Module
 import dagger.Provides

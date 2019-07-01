@@ -1,9 +1,7 @@
 package com.heske.myrecipes.requests.responses
 
-import androidx.annotation.Nullable
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.heske.myrecipes.persistence.Recipe
+import com.heske.myrecipes.models.Recipe
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 

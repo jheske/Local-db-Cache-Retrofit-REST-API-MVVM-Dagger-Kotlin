@@ -6,7 +6,7 @@
     <fragment
             android:id="@+id/recipeFragment"
             android:name="com.heske.myrecipes.ui.recipe.RecipeFragment"
-            android:label="SearchFragment">
+            android:label="RecipeFragment">
     </fragment>
 
 </navigation>

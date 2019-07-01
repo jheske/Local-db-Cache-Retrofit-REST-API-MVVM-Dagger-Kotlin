@@ -1,7 +1,7 @@
 package com.heske.myrecipes
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -16,5 +16,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
         setContentView(R.layout.activity_main)
     }
 
-    override fun supportFragmentInjector() = dispatchingAndroidInjector
+    override fun supportFragmentInjector()
+            = dispatchingAndroidInjector
 }

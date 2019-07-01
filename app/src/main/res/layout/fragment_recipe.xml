@@ -1,105 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
 
-<!-- <layout> to support data binding -->
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="HELLO WORLD!"
+              android:textSize="30sp"/>
 
-    <data>
-        <import type="com.heske.myrecipes.util.Resource" />
-
-        <import type="com.heske.myrecipes.util.Status" />
-
-        <import type="androidx.lifecycle.LiveData"/>
-
-        <import type="com.heske.myrecipes.models.Recipe"/>
-
-        <variable
-                name="repo"
-                type="LiveData&lt;Resource&lt;Recipe>>" />
-        <variable
-                name="viewModel"
-                type="com.heske.myrecipes.ui.recipe.RecipeViewModel"/>
-
-        <variable
-                name="recipe"
-                type="com.heske.myrecipes.models.Recipe"/>
-
-        <variable
-                name="retryCallback"
-                type="com.heske.myrecipes.ui.common.RetryCallback" />
-    </data>
-
-    <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/parent"
-            android:visibility="gone">
-
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-
-            <ImageView
-                    android:id="@+id/recipe_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/recipe_image_height"
-                    android:scaleType="centerCrop"/>
-
-            <TextView
-                    android:id="@+id/recipe_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/recipe_title_text_size"
-                    android:textColor="#000"
-                    android:padding="7dp"
-                    android:layout_below="@+id/recipe_image"
-                    android:text="@string/some_recipe_title"/>
-
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="100"
-                    android:layout_below="@+id/recipe_title"
-                    android:id="@+id/container"
-                    android:padding="10dp">
-
-                <TextView
-                        android:id="@+id/ingredients_title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="90"
-                        android:textSize="@dimen/recipe_publisher_text_size"
-                        android:textStyle="bold"
-                        android:text="@string/ingredients"/>
-
-                <TextView
-                        android:id="@+id/recipe_social_score"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="10"
-                        android:textSize="@dimen/recipe_publisher_text_size"
-                        android:textColor="@color/red"
-                        android:gravity="center"
-                        android:text="@string/txt_social_score"/>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                    android:id="@+id/ingredients_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:orientation="vertical"
-                    android:layout_below="@+id/container">
-            </LinearLayout>
-        </RelativeLayout>
-    </ScrollView>
-</layout>
+</LinearLayout>
 
 
 

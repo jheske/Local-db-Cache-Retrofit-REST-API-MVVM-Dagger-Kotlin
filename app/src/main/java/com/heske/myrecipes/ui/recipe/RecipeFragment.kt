@@ -6,16 +6,14 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.heske.myrecipes.AppExecutors
-import com.heske.myrecipes.R
-import com.heske.myrecipes.databinding.FragmentRecipeBinding
+import com.heske.myrecipes.R.layout
 import com.heske.myrecipes.di.Injectable
 import javax.inject.Inject
+
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -54,66 +52,22 @@ class RecipeFragment() : Fragment(), Injectable {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentRecipeBinding>(
-            inflater,
-            R.layout.fragment_recipe,
-            container,
-            false
-        )
-        recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(RecipeViewModel::class.java)
-        // binding.args = params
-        binding.setLifecycleOwner(viewLifecycleOwner)
-    // TODO this is useful, add it later
-    // dataBinding.retryCallback = object : RetryCallback {
-    //      override fun retry() {
-    //       recipeViewModel.retry()
-    //      }
-    //}
-        return binding.root
-
-// TODO replace all this image stuff with a BindingAdapter(recipeImage)
-//But WHY?? This might be a bridge too far!!!
-//        sharedElementEnterTransition = TransitionInflater
-//            .from(context)
-//            .inflateTransition(R.transition.move)
-//        // When the image is loaded, set the image request
-//        // listener to start the transaction (??I think google meant transition??)
-//        binding.imageRequestListener = object : RequestListener<Drawable> {
-//            override fun onLoadFailed(
-//                e: GlideException?,
-//                model: Any?,
-//                target: Target<Drawable>?,
-//                isFirstResource: Boolean
-//            ): Boolean {
-//                startPostponedEnterTransition()
-//                return false
-//            }
-//
-//            override fun onResourceReady(
-//                resource: Drawable?,
-//                model: Any?,
-//                target: Target<Drawable>?,
-//                dataSource: DataSource?,
-//                isFirstResource: Boolean
-//            ): Boolean {
-//                startPostponedEnterTransition()
-//                return false
-//            }
-//        }
-        // Animation Watchdog - Make sure we don't wait longer than a second for the Glide image
-//        handler.postDelayed(1000) {
-//            startPostponedEnterTransition()
-//        }
-//        postponeEnterTransition()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val view =  inflater.inflate(layout.fragment_recipe, container, false)
+        return view
+//        val binding = DataBindingUtil
+//            .inflate<FragmentRecipeBinding>(
+//                inflater,
+//                R.layout.fragment_recipe,
+//                container,
+//                false
+//            )
 //        recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
 //            .get(RecipeViewModel::class.java)
 //        // binding.args = params
-//        binding.recipe = recipeViewModel.recipe
+//        binding.viewModel = recipeViewModel
 //        binding.setLifecycleOwner(viewLifecycleOwner)
+//
+      //  return binding.root
     }
 
     /**

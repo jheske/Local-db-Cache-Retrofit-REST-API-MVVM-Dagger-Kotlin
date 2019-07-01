@@ -6,11 +6,13 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.heske.myrecipes.AppExecutors
-import com.heske.myrecipes.R.layout
+import com.heske.myrecipes.R
+import com.heske.myrecipes.databinding.FragmentRecipeBinding
 import com.heske.myrecipes.di.Injectable
 import javax.inject.Inject
 
@@ -52,22 +54,22 @@ class RecipeFragment() : Fragment(), Injectable {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =  inflater.inflate(layout.fragment_recipe, container, false)
-        return view
-//        val binding = DataBindingUtil
-//            .inflate<FragmentRecipeBinding>(
-//                inflater,
-//                R.layout.fragment_recipe,
-//                container,
-//                false
-//            )
+//        val view =  inflater.inflate(layout.fragment_recipe, container, false)
+//        return view
+        val binding = DataBindingUtil
+            .inflate<FragmentRecipeBinding>(
+                inflater,
+                R.layout.fragment_recipe,
+                container,
+                false
+            )
 //        recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
 //            .get(RecipeViewModel::class.java)
 //        // binding.args = params
 //        binding.viewModel = recipeViewModel
 //        binding.setLifecycleOwner(viewLifecycleOwner)
-//
-      //  return binding.root
+
+        return binding.root
     }
 
     /**

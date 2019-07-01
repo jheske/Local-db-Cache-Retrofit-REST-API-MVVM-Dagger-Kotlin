@@ -1,7 +1,15 @@
-package com.heske.myrecipes.requests.responses
+package com.heske.myrecipes.ui.recipelist
 
-import com.google.gson.annotations.SerializedName
-import com.heske.myrecipes.models.Recipe
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.heske.myrecipes.AppExecutors
+import com.heske.myrecipes.di.Injectable
+import javax.inject.Inject
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -24,15 +32,22 @@ import com.heske.myrecipes.models.Recipe
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-data class RecipeSearchResponse (
-    @SerializedName("count")
-    val count: Int = 0,
-
-    @SerializedName("recipes")
-    val recipes: List<Recipe>?=null,
-
-    @SerializedName("error")
-    val error: String? = null
-) {
-    var nextPage: Int? = null
-}
+//class RecipeListFragment : Fragment(), Injectable {
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelProvider.Factory
+//
+//    lateinit var recipeListViewModel: RecipeListViewModel
+//
+//    @Inject
+//    lateinit var appExecutors: AppExecutors
+//
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        return super.onCreateView(inflater, container, savedInstanceState)
+//    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        recipeListViewModel = ViewModelProviders.of(this, viewModelFactory)
+//            .get(RecipeListViewModel::class.java)
+//        recipeListViewModel.setId(params.owner, params.name)    }
+//
+//}

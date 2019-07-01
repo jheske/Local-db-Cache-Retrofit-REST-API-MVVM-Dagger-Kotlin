@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package com.heske.myrecipes.di
-import com.heske.myrecipes.ui.recipe.RecipeFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+package com.heske.myrecipes.ui.common
 
-@Suppress("unused")
-@Module
-abstract class FragmentBuildersModule {
-    @ContributesAndroidInjector
-    abstract fun contributeRecipeFragment(): RecipeFragment
+/**
+ * Generic interface for retry buttons.
+ */
+interface RetryCallback {
+    fun retry()
 }

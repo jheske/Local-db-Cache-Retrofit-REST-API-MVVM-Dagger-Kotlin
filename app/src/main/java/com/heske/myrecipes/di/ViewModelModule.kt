@@ -14,34 +14,25 @@
  * limitations under the License.
  */
 
-package com.android.example.github.di
+package com.heske.myrecipes.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.heske.myrecipes.di.ViewModelKey
-import com.heske.myrecipes.viewmodels.ViewModelProviderFactory
+import com.heske.myrecipes.ui.recipe.RecipeViewModel
+import com.heske.myrecipes.viewmodels.RecipeViewModelFactory
+
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Suppress("unused")
 @Module
-abstract class ViewModelFactoryModule {
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(UserViewModel::class)
-//    abstract fun bindUserViewModel(userViewModel: UserViewModel): ViewModel
-//
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(SearchViewModel::class)
-//    abstract fun bindSearchViewModel(searchViewModel: SearchViewModel): ViewModel
-//
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(RepoViewModel::class)
-//    abstract fun bindRepoViewModel(repoViewModel: RepoViewModel): ViewModel
+abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(RecipeViewModel::class)
+    abstract fun bindRepoViewModel(repoViewModel: RecipeViewModel): ViewModel
 
     @Binds
-    abstract fun bindViewModelFactory(factory: ViewModelProviderFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(factory: RecipeViewModelFactory): ViewModelProvider.Factory
 }

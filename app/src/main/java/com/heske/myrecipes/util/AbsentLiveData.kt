@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package com.heske.myrecipes.di
-import com.heske.myrecipes.ui.recipe.RecipeFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+package com.heske.myrecipes.util
 
-@Suppress("unused")
-@Module
-abstract class FragmentBuildersModule {
-    @ContributesAndroidInjector
-    abstract fun contributeRecipeFragment(): RecipeFragment
+import androidx.lifecycle.LiveData
+
+/**
+ * A LiveData class that has `null` value.
+ */
+class AbsentLiveData<T : Any?> private constructor(): LiveData<T>() {
+    init {
+        // use post instead of set since this can be created on any thread
+        postValue(null)
+    }
+
+    companion object {
+        fun <T> create(): LiveData<T> {
+            return AbsentLiveData()
+        }
+    }
 }

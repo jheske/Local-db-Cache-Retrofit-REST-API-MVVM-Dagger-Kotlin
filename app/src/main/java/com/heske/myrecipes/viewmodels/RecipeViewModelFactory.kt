@@ -24,8 +24,10 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 @Singleton
-class ViewModelProviderFactory @Inject constructor(
-    private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+class RecipeViewModelFactory
+@Inject constructor(
+    private val creators: Map<Class<out ViewModel>,
+            @JvmSuppressWildcards Provider<ViewModel>>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val creator = creators[modelClass] ?: creators.entries.firstOrNull {

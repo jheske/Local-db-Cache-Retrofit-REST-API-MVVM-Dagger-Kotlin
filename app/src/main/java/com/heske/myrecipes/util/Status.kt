@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package com.heske.myrecipes.di
-import com.heske.myrecipes.ui.recipe.RecipeFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+package com.heske.myrecipes.util
 
-@Suppress("unused")
-@Module
-abstract class FragmentBuildersModule {
-    @ContributesAndroidInjector
-    abstract fun contributeRecipeFragment(): RecipeFragment
+/**
+ * Status of a resource that is provided to the UI.
+ *
+ *
+ * These are usually created by the Repository classes where they return
+ * `LiveData<Resource<T>>` to pass back the latest data to the UI with its fetch status.
+ */
+enum class Status {
+    SUCCESS,
+    ERROR,
+    LOADING
 }

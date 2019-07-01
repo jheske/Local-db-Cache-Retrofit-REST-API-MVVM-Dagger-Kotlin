@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">FoodRecipes</string>
     <string name="menu_action_categories">Categories</string>
+    <string name="some_recipe_title">Some Recipe title</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="txt_social_score">100</string>
 </resources>

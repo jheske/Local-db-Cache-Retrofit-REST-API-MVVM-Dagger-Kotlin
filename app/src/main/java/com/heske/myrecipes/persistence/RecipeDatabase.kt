@@ -27,7 +27,7 @@ import com.heske.myrecipes.models.Recipe
  */
 @Database(entities = [Recipe::class], version = 1)
 abstract class RecipeDatabase : RoomDatabase() {
-    abstract val recipeDao: RecipeDao
+    abstract fun recipeDao(): RecipeDao
 }
 
 private lateinit var INSTANCE: RecipeDatabase

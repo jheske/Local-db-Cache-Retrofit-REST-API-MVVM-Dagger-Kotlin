@@ -1,4 +1,7 @@
-package com.heske.myrecipes.util
+package com.heske.myrecipes.requests.responses
+
+import com.google.gson.annotations.SerializedName
+import com.heske.myrecipes.models.Recipe
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -21,20 +24,21 @@ package com.heske.myrecipes.util
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-const val TAG = "RECIPES"
-const val DATABASE_NAME = "recipes_db"
-const val BASE_URL = "https://www.food2fork.com"
 
-// YOU NEED YOUR OWN API KEY!!!!!!!!!!!!! https://www.food2fork.com/about/api
-const val API_KEY = "dadc63b6325aaf398163b40fea9b5e79"
-const val CONNECTION_TIMEOUT = 10L // 10 seconds
-const val READ_TIMEOUT = 2L // 2 seconds
-const val WRITE_TIMEOUT = 2L // 2 seconds
+/**
+ * Retrofit creates this POJO from JSON data returned from
+ * the query. The repository creates a recipe entity from it
+ * to insert into the database.
+ */
+data class RecipeSearchResponse(
+    @SerializedName("count")
+    val count: Int = 0,
 
-const val RECIPE_REFRESH_TIME = 60 * 60 * 24 * 30 // 30 days (in seconds)
+    @SerializedName("recipes")
+    val recipes: List<Recipe>? = null,
 
-val DEFAULT_SEARCH_CATEGORIES =
-    arrayOf("Barbeque", "Breakfast", "Chicken", "Beef", "Brunch", "Dinner", "Wine", "Italian")
-
-val DEFAULT_SEARCH_CATEGORY_IMAGES =
-    arrayOf("barbeque", "breakfast", "chicken", "beef", "brunch", "dinner", "wine", "italian")
+    @SerializedName("error")
+    val error: String? = null
+) {
+    var nextPage: Int? = null
+}

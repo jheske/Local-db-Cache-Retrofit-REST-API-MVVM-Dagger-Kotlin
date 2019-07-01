@@ -35,7 +35,7 @@ import javax.inject.Singleton
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-@Module
+@Module(includes = [ViewModelModule::class])
 class AppModule {
     @Singleton
     @Provides
@@ -74,7 +74,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideUserDao(db: RecipeDatabase): RecipeDao {
-        return db.recipeDao
+    fun provideRecipeDao(db: RecipeDatabase): RecipeDao {
+        return db.recipeDao()
     }
 }

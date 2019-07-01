@@ -35,7 +35,7 @@ import javax.inject.Singleton
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 @Singleton
-class RepoRepository @Inject constructor(
+class RecipeRepository @Inject constructor(
     private val appExecutors: AppExecutors,
     private val db: RecipeDatabase,
     private val recipeDao: RecipeDao,
@@ -43,47 +43,12 @@ class RepoRepository @Inject constructor(
 ) {
     private val repoListRateLimit = RateLimiter<String>(10, TimeUnit.MINUTES)
 
-    fun search(query: String, pageNumber: Int): LiveData<Resource<List<Recipe>>> {
-        return object : NetworkBoundResource<List<Recipe>, RecipeSearchResponse>(appExecutors) {
-
-            override fun saveCallResult(item: RecipeSearchResponse) {
-
-                // Bundle the results for batch database insert
-                val repoSearchResult = RecipeSearchResponse(
-                    count = item.count,
-                    recipes = item.recipes,
-                    error = item.error
-                )
-
-                // TODO replace "!!" with null safety
-                // Insert them all in one transaction
-                db.runInTransaction {
-                    recipeDao.insertRecipes(item.recipes!!)
-                }
-            }
-
-            override fun shouldFetch(data: List<Recipe>?) = data == null
-
-            override fun loadFromDb(): LiveData<List<Recipe>> =
-                recipeDao.searchRecipes(query, pageNumber)
-
-            override fun createCall() = recipeApi.searchRecipe(API_KEY, query, pageNumber.toString())
-
-            override fun processResponse(response: ApiSuccessResponse<RecipeSearchResponse>)
-                    : RecipeSearchResponse {
-                val body = response.body
-                body.nextPage = response.nextPage
-                return body
-            }
-        }.asLiveData()
-    }
-
-    /********/
-
-    fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>> {
+    /**
+     * Download one recipe.
+     */
+    fun loadOneRecipe(recipeId: String): LiveData<Resource<Recipe>> {
         return object : NetworkBoundResource<Recipe, RecipeResponse>(appExecutors) {
                     override fun saveCallResult(item: RecipeResponse) {
-
                 // will be null if API key is expired
                 if (item.recipe != null) {
                     // item.recipe.setTimestamp((System.currentTimeMillis() / 1000).toInt())
@@ -127,4 +92,98 @@ class RepoRepository @Inject constructor(
             }
         }.asLiveData()
     }
+
+    /**
+     * Search for an download one page/List of Recipes.
+     */
+    fun search (query: String, pageNumber: Int): LiveData<Resource<List<Recipe>>> {
+        return object : NetworkBoundResource<List<Recipe>, RecipeSearchResponse>(appExecutors) {
+
+            override fun saveCallResult(item: RecipeSearchResponse) {
+
+                // Bundle the results for batch database insert
+                val repoSearchResult = RecipeSearchResponse(
+                    count = item.count,
+                    recipes = item.recipes,
+                    error = item.error
+                )
+
+                // TODO replace "!!" with null safety
+                // Insert them all in one transaction
+                db.runInTransaction {
+                    recipeDao.insertRecipes(item.recipes!!)
+                }
+            }
+
+            override fun shouldFetch(data: List<Recipe>?) = data == null
+
+            override fun loadFromDb(): LiveData<List<Recipe>> =
+                recipeDao.searchRecipes(query, pageNumber)
+
+            override fun createCall() = recipeApi.searchRecipe(API_KEY, query, pageNumber.toString())
+
+            override fun processResponse(response: ApiSuccessResponse<RecipeSearchResponse>)
+                    : RecipeSearchResponse {
+                val body = response.body
+                body.nextPage = response.nextPage
+                return body
+            }
+        }.asLiveData()
+    }
+
+    /**
+     * RecipeListViewModel calls search() to download the latest page of recipes.
+     * search() and searchNextPage() are where the real searching gets done!
+     * provide paged searching and downloading of results
+     */
+//     fun searchNextPage(query: String): LiveData<Resource<Boolean>> {
+//        val fetchNextSearchPageTask = FetchNextSearchPageTask(
+//            query = query,
+//            recipeApi = recipeApi,
+//            db = db
+//        )
+//        appExecutors.networkIO().execute(fetchNextSearchPageTask)
+//        return fetchNextSearchPageTask.liveData
+//    }
+
+//    fun searchForRecipe(query: String): LiveData<Resource<List<Recipe>>> {
+//        return object : NetworkBoundResource<List<Recipe>, RecipeSearchResponse>(appExecutors) {
+//
+//            override fun saveCallResult(item: RecipeSearchResponse) {
+//                val repoIds = item.items.map { it.id }
+//                val repoSearchResult = RepoSearchResult(
+//                    query = query,
+//                    repoIds = repoIds,
+//                    totalCount = item.total,
+//                    next = item.nextPage
+//                )
+//                db.runInTransaction {
+//                    recipeDao.insertRepos(item.items)
+//                    recipeDao.insert(repoSearchResult)
+//                }
+//            }
+//
+//            override fun shouldFetch(data: List<Recipe>?) = data == null
+//
+//            override fun loadFromDb(): LiveData<List<Recipe>> {
+//                return Transformations.switchMap(recipeDao.searchForRecipe(query)) { searchData ->
+//                    if (searchData == null) {
+//                        AbsentLiveData.create()
+//                    } else {
+//                        recipeDao.loadOrdered(searchData.repoIds)
+//                    }
+//                }
+//            }
+//
+//            override fun createCall() = githubService.searchRepos(query)
+//
+//            override fun processResponse(response: ApiSuccessResponse<RepoSearchResponse>)
+//                    : RepoSearchResponse {
+//                val body = response.body
+//                body.nextPage = response.nextPage
+//                return body
+//            }
+//        }.asLiveData()
+//    }
+
 }

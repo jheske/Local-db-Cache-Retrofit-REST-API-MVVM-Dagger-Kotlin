@@ -16,28 +16,14 @@
 
 package com.heske.myrecipes.di
 
-import android.app.Application
-import com.heske.myrecipes.RecipeApp
-import dagger.BindsInstance
-import dagger.Component
-import dagger.android.AndroidInjectionModule
-import javax.inject.Singleton
+import com.heske.myrecipes.MainActivity
 
-@Singleton
-@Component(
-    modules = [
-        AndroidInjectionModule::class,
-        AppModule::class,
-        MainActivityModule::class]
-)
-interface AppComponent {
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: Application): Builder
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-        fun build(): AppComponent
-    }
-
-    fun inject(recipeApp: RecipeApp)
+@Suppress("unused")
+@Module
+abstract class MainActivityModule {
+    @ContributesAndroidInjector(modules = [FragmentBuildersModule::class])
+    abstract fun contributeMainActivity(): MainActivity
 }

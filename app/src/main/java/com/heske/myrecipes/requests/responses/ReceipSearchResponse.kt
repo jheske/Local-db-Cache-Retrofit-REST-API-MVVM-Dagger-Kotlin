@@ -28,15 +28,13 @@ import com.heske.myrecipes.persistence.Recipe
  */
 data class RecipeSearchResponse (
     @SerializedName("count")
-    @Expose
     val count: Int = 0,
 
     @SerializedName("recipes")
-    @Expose
-    @get:Nullable
-    val recipes: List<Recipe>? = null,
+    val recipes: List<Recipe>?=null,
 
     @SerializedName("error")
-    @Expose
     val error: String? = null
-)
+) {
+    var nextPage: Int? = null
+}

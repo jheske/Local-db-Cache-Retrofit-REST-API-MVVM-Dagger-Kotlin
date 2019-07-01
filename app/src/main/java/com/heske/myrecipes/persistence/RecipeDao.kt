@@ -29,22 +29,23 @@ import androidx.room.Query
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 @Dao
-interface RecipeDao {
+abstract class RecipeDao {
 
     @Insert(onConflict = IGNORE)
-    fun insertRecipes(vararg recipe: Recipe): LongArray
+   // abstract fun insertRecipes(vararg recipe: Recipe): LongArray
+    abstract fun insertRecipes(recipes: List<Recipe>): LongArray
 
     @Insert(onConflict = REPLACE)
-    fun insertRecipe(recipe: Recipe)
+    abstract fun insertRecipe(recipe: Recipe)
 
     @Query("UPDATE recipes SET title = :title, publisher = :publisher, image_url = :image_url, social_rank = :social_rank " + "WHERE recipe_id = :recipe_id")
-    fun updateRecipe(recipe_id: String, title: String, publisher: String, image_url: String, social_rank: Float)
+    abstract fun updateRecipe(recipe_id: String, title: String, publisher: String, image_url: String, social_rank: Float)
 
     @Query("SELECT * FROM recipes WHERE title LIKE '%' || :query || '%' OR ingredients LIKE '%' || :query || '%' " + "ORDER BY social_rank DESC LIMIT (:pageNumber * 30)")
-    fun searchRecipes(query: String, pageNumber: Int): LiveData<List<Recipe>>
+    abstract fun searchRecipes(query: String, pageNumber: Int): LiveData<List<Recipe>>
 
     @Query("SELECT * FROM recipes WHERE recipe_id = :recipe_id")
-    fun getRecipe(recipe_id: String): LiveData<Recipe>
+    abstract fun getRecipe(recipe_id: String): LiveData<Recipe>
 }
 
 

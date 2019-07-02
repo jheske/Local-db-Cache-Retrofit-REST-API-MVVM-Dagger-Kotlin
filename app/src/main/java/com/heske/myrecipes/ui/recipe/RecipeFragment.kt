@@ -1,19 +1,21 @@
 package com.heske.myrecipes.ui.recipe
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.heske.myrecipes.AppExecutors
 import com.heske.myrecipes.R
 import com.heske.myrecipes.databinding.FragmentRecipeBinding
 import com.heske.myrecipes.di.Injectable
+import com.heske.myrecipes.util.TAG
 import javax.inject.Inject
 
 
@@ -46,30 +48,33 @@ class RecipeFragment() : Fragment(), Injectable {
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    //private val params by navArgs<UserFragmentArgs>()
-    // private var adapter by autoCleared<RepoListAdapter>()
-    private var handler = Handler(Looper.getMainLooper())
+    lateinit var binding: FragmentRecipeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        val view =  inflater.inflate(layout.fragment_recipe, container, false)
-//        return view
-        val binding = DataBindingUtil
+        binding = DataBindingUtil
             .inflate<FragmentRecipeBinding>(
                 inflater,
                 R.layout.fragment_recipe,
                 container,
                 false
             )
-//        recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
-//            .get(RecipeViewModel::class.java)
-//        // binding.args = params
-//        binding.viewModel = recipeViewModel
-//        binding.setLifecycleOwner(viewLifecycleOwner)
-
+        recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(RecipeViewModel::class.java)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        recipeViewModel.setRecipeId("chocolate")
+        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.recipe = recipeViewModel.recipe
+        // Gotta observe recipe LiveData, or its switchmap in the viewModel will
+        // never be triggered, even when _recipeId.value is set.
+        recipeViewModel.recipe.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG,"recipeId value has changed!!")
+        })
     }
 
     /**

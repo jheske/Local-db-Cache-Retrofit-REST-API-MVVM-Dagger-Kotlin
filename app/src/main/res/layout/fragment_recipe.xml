@@ -1,17 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <data>
+        <import type="com.heske.myrecipes.util.Status"/>
+
+        <import type="com.heske.myrecipes.util.Resource"/>
+
+        <import type="androidx.lifecycle.LiveData"/>
+
+        <import type="com.heske.myrecipes.models.Recipe"/>
+
+        <variable
+                name="viewModel"
+                type="com.heske.myrecipes.ui.recipe.RecipeViewModel"/>
+
+        <variable
+                name="recipe"
+                type="LiveData&lt;Resource&lt;Recipe>>"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            tools:context="com.heske.terriertime.MainActivity"
+            tools:ignore="MergeRootFrame">
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="HELLO WORLD!"
-                  android:textSize="30sp"/>
+        <ImageView
+                android:id="@+id/recipe_detail_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/recipe_image_height"
+                android:scaleType="centerCrop"
+                android:fitsSystemWindows="true"
+                android:src="@drawable/brunch"
+                tools:src="@drawable/brunch"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-    </LinearLayout>
+        <TextView
+                android:id="@+id/recipe_detail_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/recipe_title_text_size"
+                android:textColor="#000"
+                android:padding="7dp"
+                android:layout_below="@+id/recipe_image"
+                android:text="Some Recipe title"
+                tools:text="Some Recipe title"
+                app:layout_constraintTop_toBottomOf="@+id/recipe_detail_image"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+                android:id="@+id/ingredients_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/recipe_publisher_text_size"
+                android:textStyle="bold"
+                android:text="Ingredients"
+                tools:text="Ingredients"
+                app:layout_constraintTop_toBottomOf="@+id/recipe_detail_title"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+                android:id="@+id/recipe_social_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/recipe_publisher_text_size"
+                android:textColor="@color/red"
+                android:text="100"
+                app:layout_constraintTop_toBottomOf="@+id/ingredients_title"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
 

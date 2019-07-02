@@ -6,7 +6,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.heske.myrecipes.models.Recipe
 import com.heske.myrecipes.repositories.RecipeRepository
-import com.heske.myrecipes.util.API_KEY
 import com.heske.myrecipes.util.AbsentLiveData
 import com.heske.myrecipes.util.Resource
 import javax.inject.Inject
@@ -33,25 +32,27 @@ import javax.inject.Inject
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : ViewModel() {
-
     // Looks like the Recipe object is wrapped in an object so it
     // can be tested for exists and correctness.
-    private val _recipeId: MutableLiveData<RecipeId> = MutableLiveData()
+    val _recipeId: MutableLiveData<RecipeId> = MutableLiveData()
 
+    // Observable but not used right now. Will be useful for testing.
     val recipeId: LiveData<RecipeId>
         get() = _recipeId
 
+    // Gotta observe recipe LiveData (in the Fragment), or the switchmap will
+    // never be triggered, even when _recipeId.value is set.
     val recipe: LiveData<Resource<Recipe>> = Transformations
         .switchMap(_recipeId) { input ->
-            input.ifExists {recipeId ->
-                recipeRepository.loadOneRecipe(recipeId)
+            input.ifExists { recipeName ->
+                recipeRepository.loadOneRecipe(recipeName)
             }
         }
 
     // Called from RecipeFragment RetryCallback
     // retry the recipe request.
     fun retry() {
-        val recipeId = _recipeId.value?.recipeId
+        val recipeId = _recipeId.value?.recipeName
         if (recipeId != null) {
             _recipeId.value = RecipeId(recipeId)
         }
@@ -59,8 +60,8 @@ class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : 
 
     // Called by RecipeFragment to request a  recipe.
     // Set recipeLiveData to trigger recipeRepository.loadOneRecipe().
-    fun setRecipeId(id: String) {
-        val update = RecipeId(id)
+    fun setRecipeId(recipeName: String) {
+        val update = RecipeId(recipeName)
         if (_recipeId.value == update) {
             return
         }
@@ -71,12 +72,12 @@ class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : 
      * Google probably uses this for testing whether or not
      * the LiveData object exists and is correct.
      */
-    data class RecipeId(val recipeId: String) {
+    data class RecipeId(val recipeName: String) {
         fun <T> ifExists(f: (String) -> LiveData<T>): LiveData<T> {
-            return if (recipeId.isBlank()) {
+            return if (recipeName.isBlank()) {
                 AbsentLiveData.create()
             } else {
-                f(recipeId)
+                f(recipeName)
             }
         }
     }

@@ -1,14 +1,17 @@
 package com.heske.myrecipes.repositories
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.heske.myrecipes.AppExecutors
 import com.heske.myrecipes.models.Recipe
 import com.heske.myrecipes.persistence.RecipeDao
 import com.heske.myrecipes.persistence.RecipeDatabase
 import com.heske.myrecipes.requests.RecipeApi
-import com.heske.myrecipes.requests.responses.*
-import com.heske.myrecipes.util.*
+import com.heske.myrecipes.requests.responses.ApiSuccessResponse
+import com.heske.myrecipes.requests.responses.RecipeSearchResponse
+import com.heske.myrecipes.util.API_KEY
+import com.heske.myrecipes.util.NetworkBoundResource
+import com.heske.myrecipes.util.RateLimiter
+import com.heske.myrecipes.util.Resource
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -47,49 +50,19 @@ class RecipeRepository @Inject constructor(
      * Download one recipe.
      */
     fun loadOneRecipe(recipeId: String): LiveData<Resource<Recipe>> {
-        return object : NetworkBoundResource<Recipe, RecipeResponse>(appExecutors) {
-                    override fun saveCallResult(item: RecipeResponse) {
-                // will be null if API key is expired
-                if (item.recipe != null) {
-                    // item.recipe.setTimestamp((System.currentTimeMillis() / 1000).toInt())
-                    item.recipe.timestamp = (System.currentTimeMillis() / 1000).toInt()
-                    recipeDao.insertRecipe(item.recipe)
-                }
+        return object : NetworkBoundResource<Recipe, Recipe>(appExecutors) {
+            override fun saveCallResult(item: Recipe) {
+                recipeDao.insertRecipe(item)
             }
 
-            override fun shouldFetch(data: Recipe?): Boolean {
-                if (data == null) {
-                    return false
-                }
-                Log.d(TAG, "shouldFetch: recipe: $data")
-                val currentTime = (System.currentTimeMillis() / 1000).toInt()
-                Log.d(TAG, "shouldFetch: current time: $currentTime")
+            override fun shouldFetch(data: Recipe?) = data == null
 
-                val lastRefresh = data.timestamp
-                Log.d(TAG, "shouldFetch: last refresh: $lastRefresh")
+            override fun loadFromDb() = recipeDao.getRecipe(
+                recipe_id = recipeId            )
 
-                Log.d(
-                    TAG, "shouldFetch: it's been " + (currentTime - lastRefresh) / 60 / 60 / 24 +
-                            " days since this recipe was refreshed. 30 days must elapse before refreshing. "
-                )
-                if (currentTime - data.timestamp >= RECIPE_REFRESH_TIME) {
-                    Log.d(TAG, "shouldFetch: SHOULD REFRESH RECIPE?! " + true)
-                    return true
-                }
-                Log.d(TAG, "shouldFetch: SHOULD REFRESH RECIPE?! " + false)
-                return false
-            }
+            override fun createCall()
+                    = recipeApi.getRecipe(API_KEY,recipeId)
 
-            override fun loadFromDb(): LiveData<Recipe> {
-                return recipeDao.getRecipe(recipeId)
-            }
-
-            override fun createCall(): LiveData<ApiResponse<RecipeResponse>> {
-                return recipeApi.getRecipe(
-                    API_KEY,
-                    recipeId
-                )
-            }
         }.asLiveData()
     }
 

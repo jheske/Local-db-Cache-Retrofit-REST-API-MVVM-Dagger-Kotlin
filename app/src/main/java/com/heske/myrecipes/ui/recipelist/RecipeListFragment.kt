@@ -61,27 +61,27 @@ class RecipeListFragment : Fragment(), Injectable {
             container,
             false
         )
-
         recipeListViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RecipeListViewModel::class.java)
+
+        adapter = RecipeListAdapter()
+
+        binding.recipeListRecyler.adapter = adapter
+        binding.viewModel = recipeListViewModel
+        subscribeOvserver()
+        binding.setLifecycleOwner(viewLifecycleOwner)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val query = RecipeListFragmentArgs.fromBundle(arguments!!).query
-        adapter = RecipeListAdapter()
-        binding.recipeListRecyler.adapter = RecipeListAdapter()
-        binding.viewModel = recipeListViewModel
-        binding.setLifecycleOwner(viewLifecycleOwner)
-        subscribeOvserver()
-        recipeListViewModel.runQuery(query)
-       // binding.recipeList = recipeListViewModel.recipeList
-        // Gotta observe recipe LiveData, or its switchmap in the viewModel will
-        // never be triggered, even when _recipeId.value is set.
-
+        recipeListViewModel.runQuery(
+            RecipeListFragmentArgs.fromBundle(arguments!!).query
+        )
     }
 
     private fun subscribeOvserver() {
+        // Gotta observe recipeList LiveData, or its switchmap in the viewModel will
+        // never be triggered, even when  its value changes.
         recipeListViewModel.recipeList.observe(viewLifecycleOwner, Observer { listResource ->
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.

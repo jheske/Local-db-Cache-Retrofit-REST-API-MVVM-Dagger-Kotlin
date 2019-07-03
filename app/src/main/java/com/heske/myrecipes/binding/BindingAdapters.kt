@@ -1,6 +1,5 @@
 package com.heske.myrecipes.binding
 
-import android.net.Uri
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -52,11 +51,9 @@ fun bindCategoryListItemImageUrl(imgView: ImageView, imageUrl: android.net.Uri?)
 
 @BindingAdapter("recipeListItemImageUrl")
 fun bindRecipeListItemImageUrl(imgView: ImageView, imageUrl: String?) {
-    val path
-            = Uri.parse("android.resource://com.codingwithmitch.foodrecipes/drawable/$imageUrl")
     imageUrl?.let {
         Glide.with(imgView.context)
-            .load(path)
+            .load(imageUrl)
             .apply(
                 RequestOptions()
                     .error(R.drawable.barbeque)

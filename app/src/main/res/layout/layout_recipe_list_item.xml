@@ -33,7 +33,8 @@
                     android:scaleType="centerCrop"
                     android:contentDescription="@{recipe.title}"
                     android:src="@drawable/ic_launcher_background"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:recipeListItemImageUrl="@{recipe.image_url}"/>
 
             <TextView
                     android:id="@+id/recipe_title"

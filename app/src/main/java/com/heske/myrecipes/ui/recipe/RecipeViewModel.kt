@@ -45,7 +45,7 @@ class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : 
     val recipe: LiveData<Resource<Recipe>> = Transformations
         .switchMap(_recipeId) { input ->
             input.ifExists { recipeName ->
-                recipeRepository.loadOneRecipe(recipeName)
+                recipeRepository.searchRecipesApi(recipeName)
             }
         }
 
@@ -59,7 +59,7 @@ class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : 
     }
 
     // Called by RecipeFragment to request a  recipe.
-    // Set recipeLiveData to trigger recipeRepository.loadOneRecipe().
+    // Set recipeLiveData to trigger recipeRepository.searchRecipesApi().
     fun setRecipeId(recipeName: String) {
         val update = RecipeId(recipeName)
         if (_recipeId.value == update) {

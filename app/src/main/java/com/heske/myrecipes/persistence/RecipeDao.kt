@@ -3,6 +3,7 @@ package com.heske.myrecipes.persistence
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
@@ -47,6 +48,17 @@ abstract class RecipeDao {
 
     @Query("SELECT * FROM recipes WHERE recipe_id = :recipe_id")
     abstract fun getRecipe(recipe_id: String): LiveData<Recipe>
+
+    /** RecipeSearchResult table methods **/
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertSearchResult(result: RecipeSearchResult)
+
+    @Query("SELECT * FROM RecipeSearchResult WHERE `query` = :query")
+    abstract fun search(query: String): LiveData<RecipeSearchResult>
+
+    @Query("SELECT * FROM RecipeSearchResult WHERE `query` = :query")
+    abstract fun findSearchResult(query: String): RecipeSearchResult?
 }
 
 

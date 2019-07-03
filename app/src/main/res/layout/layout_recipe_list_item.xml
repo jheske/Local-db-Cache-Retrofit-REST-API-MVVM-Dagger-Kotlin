@@ -1,78 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/card_view"
-        app:cardElevation="10dp">
+    <data>
 
-        <LinearLayout
+        <variable
+                name="showFullName"
+                type="boolean"/>
+
+        <variable
+                name="repo"
+                type="com.heske.myrecipes.models.Recipe"/>
+    </data>
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/recipe_image_height"
-                android:scaleType="centerCrop"
-                android:id="@+id/recipe_image"
-                android:src="@drawable/ic_launcher_background"/>
-
-            <LinearLayout
+        <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:id="@+id/card_view"
+                app:cardElevation="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/recipe_title_text_size"
-                    android:textColor="#000"
-                    android:id="@+id/recipe_title"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    tools:context="com.heske.myrecipes.MainActivity"
+                    tools:ignore="MergeRootFrame">
+
+                <ImageView
+                        android:id="@+id/recipe_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/recipe_image_height"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_launcher_background"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintTop_toBottomOf="@+id/recipe_image">
+
+                    <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/recipe_image_height"
+                            android:scaleType="centerCrop"
+                            android:id="@+id/recipe_image2"
+                            android:src="@drawable/ic_launcher_background"/>
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="90"
-                        android:textSize="@dimen/recipe_publisher_text_size"
-                        android:id="@+id/recipe_publisher"
-                        android:gravity="start"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/recipe_title_text_size"
+                            android:textColor="#000"
+                            android:id="@+id/recipe_title"/>
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="10"
-                        android:textSize="@dimen/recipe_publisher_text_size"
-                        android:textColor="@color/red"
-                        android:id="@+id/recipe_social_score"
-                        android:gravity="center"/>
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/recipe_title_text_size"
+                                android:textColor="#000"
+                                android:id="@+id/recipe_title2"/>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="100">
+
+                            <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="90"
+                                    android:textSize="@dimen/recipe_publisher_text_size"
+                                    android:id="@+id/recipe_publisher"
+                                    android:gravity="start"/>
+
+                            <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="10"
+                                    android:textSize="@dimen/recipe_publisher_text_size"
+                                    android:textColor="@color/red"
+                                    android:id="@+id/recipe_social_score"
+                                    android:gravity="center"/>
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-
-</LinearLayout>
-
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</layout>
 
 
 

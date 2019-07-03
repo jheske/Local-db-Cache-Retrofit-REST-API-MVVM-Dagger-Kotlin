@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            tools:context="com.heske.terriertime.MainActivity"
+            tools:context="com.heske.myrecipes.MainActivity"
             tools:ignore="MergeRootFrame">
 
         <ImageView
@@ -45,7 +45,6 @@
                 android:textSize="@dimen/recipe_title_text_size"
                 android:textColor="#000"
                 android:padding="7dp"
-                android:layout_below="@+id/recipe_image"
                 android:text="Some Recipe title"
                 tools:text="Some Recipe title"
                 app:layout_constraintTop_toBottomOf="@+id/recipe_detail_image"

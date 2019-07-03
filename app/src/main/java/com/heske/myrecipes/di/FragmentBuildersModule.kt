@@ -15,13 +15,22 @@
  */
 
 package com.heske.myrecipes.di
+import com.heske.myrecipes.ui.categorylist.CategoryListFragment
 import com.heske.myrecipes.ui.recipe.RecipeFragment
+import com.heske.myrecipes.ui.recipelist.RecipeListFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Suppress("unused")
 @Module
 abstract class FragmentBuildersModule {
+
+    @ContributesAndroidInjector
+    abstract fun contributeCategoryListFragment(): CategoryListFragment
+
     @ContributesAndroidInjector
     abstract fun contributeRecipeFragment(): RecipeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeRecipeListFragment(): RecipeListFragment
 }

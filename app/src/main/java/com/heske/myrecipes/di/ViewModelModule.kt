@@ -18,7 +18,9 @@ package com.heske.myrecipes.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.heske.myrecipes.ui.categorylist.CategoryListViewModel
 import com.heske.myrecipes.ui.recipe.RecipeViewModel
+import com.heske.myrecipes.ui.recipelist.RecipeListViewModel
 import com.heske.myrecipes.viewmodels.RecipeViewModelFactory
 
 import dagger.Binds
@@ -28,10 +30,27 @@ import dagger.multibindings.IntoMap
 @Suppress("unused")
 @Module
 abstract class ViewModelModule {
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CategoryListViewModel::class)
+    abstract fun bindCategoryListViewModel(
+        categoryListViewModel: CategoryListViewModel
+    ): ViewModel
+
     @Binds
     @IntoMap
     @ViewModelKey(RecipeViewModel::class)
-    abstract fun bindRepoViewModel(repoViewModel: RecipeViewModel): ViewModel
+    abstract fun bindRecipeViewModel(
+        recipeViewModel: RecipeViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RecipeListViewModel::class)
+    abstract fun bindRecipeListViewModel(
+        recipeListViewModel: RecipeListViewModel
+    ): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: RecipeViewModelFactory): ViewModelProvider.Factory

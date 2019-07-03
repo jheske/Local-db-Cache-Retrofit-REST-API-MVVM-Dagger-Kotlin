@@ -1,17 +1,14 @@
 package com.heske.myrecipes.repositories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.heske.myrecipes.AppExecutors
 import com.heske.myrecipes.models.Recipe
 import com.heske.myrecipes.persistence.RecipeDao
 import com.heske.myrecipes.persistence.RecipeDatabase
 import com.heske.myrecipes.requests.RecipeApi
-import com.heske.myrecipes.requests.responses.ApiSuccessResponse
 import com.heske.myrecipes.requests.responses.RecipeSearchResponse
-import com.heske.myrecipes.util.API_KEY
-import com.heske.myrecipes.util.NetworkBoundResource
-import com.heske.myrecipes.util.RateLimiter
-import com.heske.myrecipes.util.Resource
+import com.heske.myrecipes.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -49,114 +46,99 @@ class RecipeRepository @Inject constructor(
     /**
      * Download one recipe.
      */
-    fun loadOneRecipe(recipeId: String): LiveData<Resource<Recipe>> {
+    fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>> {
         return object : NetworkBoundResource<Recipe, Recipe>(appExecutors) {
+            // Called after download completes to insert downloaded
+            // data into the database.
             override fun saveCallResult(item: Recipe) {
                 recipeDao.insertRecipe(item)
             }
 
+            // true = there's no data, should fetch it from the Network
             override fun shouldFetch(data: Recipe?) = data == null
 
             override fun loadFromDb() = recipeDao.getRecipe(
-                recipe_id = recipeId            )
+                recipe_id = recipeId
+            )
 
-            override fun createCall()
-                    = recipeApi.getRecipe(API_KEY,recipeId)
+            // Make the network call to get the data
+            override fun createCall() = recipeApi.getRecipe(API_KEY, recipeId)
 
         }.asLiveData()
     }
 
     /**
-     * Search for an download one page/List of Recipes.
+     * Download a list of recipes
      */
-    fun search (query: String, pageNumber: Int): LiveData<Resource<List<Recipe>>> {
+    fun searchRecipesApi(query: String, pageNumber: Int): LiveData<Resource<List<Recipe>>> {
         return object : NetworkBoundResource<List<Recipe>, RecipeSearchResponse>(appExecutors) {
-
+            // Called after download completes to insert downloaded
+            // data into the database.
+            // RecipeSearchResponse is the deserialized Retrofit response
+            // RecipeSearchResult is a database table for storing the list
+            // of Recipes along with some metadata about the search.
             override fun saveCallResult(item: RecipeSearchResponse) {
-
-                // Bundle the results for batch database insert
-                val repoSearchResult = RecipeSearchResponse(
-                    count = item.count,
-                    recipes = item.recipes,
-                    error = item.error
-                )
-
-                // TODO replace "!!" with null safety
-                // Insert them all in one transaction
-                db.runInTransaction {
-                    recipeDao.insertRecipes(item.recipes!!)
-                }
-            }
-
-            override fun shouldFetch(data: List<Recipe>?) = data == null
-
-            override fun loadFromDb(): LiveData<List<Recipe>> =
-                recipeDao.searchRecipes(query, pageNumber)
-
-            override fun createCall() = recipeApi.searchRecipe(API_KEY, query, pageNumber.toString())
-
-            override fun processResponse(response: ApiSuccessResponse<RecipeSearchResponse>)
-                    : RecipeSearchResponse {
-                val body = response.body
-                body.nextPage = response.nextPage
-                return body
-            }
-        }.asLiveData()
-    }
-
-    /**
-     * RecipeListViewModel calls search() to download the latest page of recipes.
-     * search() and searchNextPage() are where the real searching gets done!
-     * provide paged searching and downloading of results
-     */
-//     fun searchNextPage(query: String): LiveData<Resource<Boolean>> {
-//        val fetchNextSearchPageTask = FetchNextSearchPageTask(
-//            query = query,
-//            recipeApi = recipeApi,
-//            db = db
-//        )
-//        appExecutors.networkIO().execute(fetchNextSearchPageTask)
-//        return fetchNextSearchPageTask.liveData
-//    }
-
-//    fun searchForRecipe(query: String): LiveData<Resource<List<Recipe>>> {
-//        return object : NetworkBoundResource<List<Recipe>, RecipeSearchResponse>(appExecutors) {
+                if (item.recipes == null)
+                    return
+                Log.d(TAG, "[saveCallResult] Received ${item.recipes.size} recipes ")
+//                val recipeIds = item.recipes.map {
+//                    it.recipe_id
+//                }
+//                val recipes = ArrayList<Recipe>(item.recipes.size)
+//                for (i in 0..recipes.size-1) {
 //
-//            override fun saveCallResult(item: RecipeSearchResponse) {
-//                val repoIds = item.items.map { it.id }
-//                val repoSearchResult = RepoSearchResult(
+//                }
+//                val recipeSearchResult = RecipeSearchResult(
 //                    query = query,
-//                    repoIds = repoIds,
-//                    totalCount = item.total,
-//                    next = item.nextPage
+//                    recipeIds = recipeIds,
+//                    total = item.count,
+//                    nextPage = item.nextPage
 //                )
 //                db.runInTransaction {
-//                    recipeDao.insertRepos(item.items)
-//                    recipeDao.insert(repoSearchResult)
+//                    recipeDao.insertRecipes(item.recipes)
+//                    recipeDao.insertSearchResult(recipeSearchResult)
 //                }
-//            }
-//
-//            override fun shouldFetch(data: List<Recipe>?) = data == null
-//
-//            override fun loadFromDb(): LiveData<List<Recipe>> {
-//                return Transformations.switchMap(recipeDao.searchForRecipe(query)) { searchData ->
-//                    if (searchData == null) {
-//                        AbsentLiveData.create()
-//                    } else {
-//                        recipeDao.loadOrdered(searchData.repoIds)
+            }
+//                if (item.recipes != null) { // recipe list will be null if the api key is expired
+//                    val recipes = arrayOfNulls<Recipe>(item.recipes.size)
+//                    var index = 0
+//                    for (rowid in recipeDao.insertRecipes(
+//                        item.recipes.toArray(recipes) as Array<Recipe>
+//                    )) {
+//                        if (rowid == -1) {
+//                            Log.d(TAG, "saveCallResult: CONFLICT... This recipe is already in the cache")
+//                            // if the recipe already exists... I don't want to set the ingredients or timestamp b/c
+//                            // they will be erased
+//                            recipeDao.updateRecipe(
+//                                recipes[index].recipe_id,
+//                                recipes[index].title,
+//                                recipes[index].publisher,
+//                                recipes[index].image_url,
+//                                recipes[index].social_rank
+//                            )
+//                        }
+//                        index++
 //                    }
 //                }
-//            }
-//
-//            override fun createCall() = githubService.searchRepos(query)
-//
-//            override fun processResponse(response: ApiSuccessResponse<RepoSearchResponse>)
-//                    : RepoSearchResponse {
-//                val body = response.body
-//                body.nextPage = response.nextPage
-//                return body
-//            }
-//        }.asLiveData()
-//    }
+
+
+            // true = there's no data, should fetch it from the Network
+            override fun shouldFetch(data: List<Recipe>?) = true
+
+            override fun loadFromDb() = recipeDao.searchRecipes(
+                query,
+                pageNumber
+            )
+
+            // Make the network call to get the data
+            override fun createCall() = recipeApi
+                .searchRecipe(
+                    API_KEY,
+                    query,
+                    pageNumber.toString()
+                );
+
+        }.asLiveData()
+    }
 
 }

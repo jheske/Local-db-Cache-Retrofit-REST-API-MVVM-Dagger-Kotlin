@@ -1,7 +1,4 @@
-package com.heske.myrecipes.requests.responses
-
-import com.google.gson.annotations.SerializedName
-import com.heske.myrecipes.models.Recipe
+package com.heske.myrecipes.util
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -24,21 +21,3 @@ import com.heske.myrecipes.models.Recipe
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-/**
- * Retrofit creates this POJO from JSON data returned from
- * the query. The repository creates a recipe entity from it
- * to insert into the database.
- */
-data class RecipeSearchResponse(
-    @SerializedName("count")
-    val count: Int = 0,
-
-    @SerializedName("recipes")
-    val recipes: List<Recipe>?=null,
-
-    @SerializedName("error")
-    val error: String? = null
-) {
-    var nextPage: Int? = null
-}

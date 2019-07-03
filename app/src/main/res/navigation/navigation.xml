@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/main"
-            app:startDestination="@id/recipeFragment">
+<navigation
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/navigation"
+        app:startDestination="@id/categoryListFragment">
+
     <fragment
-            android:id="@+id/recipeFragment"
-            android:name="com.heske.myrecipes.ui.recipe.RecipeFragment"
-            android:label="RecipeFragment">
+            android:id="@+id/categoryListFragment"
+            android:name="com.heske.myrecipes.ui.categorylist.CategoryListFragment"
+            android:label="Categories">
     </fragment>
 
 </navigation>

@@ -9,10 +9,12 @@ import com.heske.myrecipes.util.*
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -37,10 +39,20 @@ import javax.inject.Singleton
  */
 @Module(includes = [ViewModelModule::class])
 class AppModule {
+
     @Singleton
     @Provides
-    internal fun provideOkHttpClient(): OkHttpClient {
+    internal fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return interceptor
+    }
+
+    @Singleton
+    @Provides
+    internal fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
             // establish connection to server
             .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)
             // time between each byte read from the server

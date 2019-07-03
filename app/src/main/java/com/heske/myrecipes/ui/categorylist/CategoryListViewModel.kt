@@ -1,7 +1,11 @@
-package com.heske.myrecipes.requests.responses
+package com.heske.myrecipes.ui.categorylist
 
-import com.google.gson.annotations.SerializedName
-import com.heske.myrecipes.models.Recipe
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.heske.myrecipes.models.Category
+import com.heske.myrecipes.util.DefaultCategories
+import javax.inject.Inject
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -24,21 +28,12 @@ import com.heske.myrecipes.models.Recipe
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+class CategoryListViewModel @Inject constructor() : ViewModel() {
+    private var _categories = MutableLiveData<List<Category>>()
+    val categories: LiveData<List<Category>>
+        get() = _categories
 
-/**
- * Retrofit creates this POJO from JSON data returned from
- * the query. The repository creates a recipe entity from it
- * to insert into the database.
- */
-data class RecipeSearchResponse(
-    @SerializedName("count")
-    val count: Int = 0,
-
-    @SerializedName("recipes")
-    val recipes: List<Recipe>?=null,
-
-    @SerializedName("error")
-    val error: String? = null
-) {
-    var nextPage: Int? = null
+    init {
+        _categories.value = DefaultCategories.default_categories
+    }
 }

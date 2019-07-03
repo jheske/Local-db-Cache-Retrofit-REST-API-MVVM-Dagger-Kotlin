@@ -1,5 +1,7 @@
 package com.heske.myrecipes.util
 
+import com.heske.myrecipes.models.Category
+
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -38,3 +40,17 @@ val DEFAULT_SEARCH_CATEGORIES =
 
 val DEFAULT_SEARCH_CATEGORY_IMAGES =
     arrayOf("barbeque", "breakfast", "chicken", "beef", "brunch", "dinner", "wine", "italian")
+
+object DefaultCategories {
+    val default_categories: List<Category>
+        get() = arrayListOf(
+            Category("Barbeque"),
+            Category("Beef"),
+            Category("Breakfast"),
+            Category("Chicken"),
+            Category("Brunch"),
+            Category("Dinner"),
+            Category("Wine"),
+            Category("Italian")
+        )
+}

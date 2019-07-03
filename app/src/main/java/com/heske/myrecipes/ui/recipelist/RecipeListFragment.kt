@@ -1,13 +1,19 @@
 package com.heske.myrecipes.ui.recipelist
 
+import android.content.Context
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.heske.myrecipes.AppExecutors
+import com.heske.myrecipes.R
+import com.heske.myrecipes.databinding.FragmentRecipeListBinding
 import com.heske.myrecipes.di.Injectable
 import javax.inject.Inject
 
@@ -32,22 +38,64 @@ import javax.inject.Inject
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-//class RecipeListFragment : Fragment(), Injectable {
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelProvider.Factory
-//
-//    lateinit var recipeListViewModel: RecipeListViewModel
-//
-//    @Inject
-//    lateinit var appExecutors: AppExecutors
-//
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        return super.onCreateView(inflater, container, savedInstanceState)
-//    }
+class RecipeListFragment : Fragment(), Injectable {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    lateinit var recipeListViewModel: RecipeListViewModel
+
+    @Inject
+    lateinit var appExecutors: AppExecutors
+
+    lateinit var binding: FragmentRecipeListBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = DataBindingUtil.inflate<FragmentRecipeListBinding>(
+            inflater,
+            R.layout.fragment_recipe_list,
+            container,
+            false
+        )
+
+        recipeListViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(RecipeListViewModel::class.java)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+    }
+
+    private fun getList() {
+
+    }
+
+    private fun dismissKeyboard(windowToken: IBinder) {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(windowToken, 0)
+    }
+/*
+
+ private fun initRecipeList(viewModel: RepoViewModel) {
+        viewModel.contributors.observe(viewLifecycleOwner, Observer { listResource ->
+            // we don't need any null checks here for the adapter since LiveData guarantees that
+            // it won't call us if fragment is stopped or not started.
+            if (listResource?.data != null) {
+                adapter.submitList(listResource.data)
+            } else {
+                adapter.submitList(emptyList())
+            }
+        })
+    }
+
+ */
 //
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        recipeListViewModel = ViewModelProviders.of(this, viewModelFactory)
 //            .get(RecipeListViewModel::class.java)
 //        recipeListViewModel.setId(params.owner, params.name)    }
 //
-//}
+}

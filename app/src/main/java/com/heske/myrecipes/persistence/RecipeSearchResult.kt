@@ -20,12 +20,15 @@ import androidx.room.Entity
 import androidx.room.TypeConverters
 
 /**
- * This table keeps track of the user's current query,
+ * This table is keeps track of the user's current query,
  * all the recipes that have been downloaded so far,
  * and the next page to download when user scrolls.
+ *
+ * NOTE, this table is related to the Recipe table. Its
+ * db methods are in RecipeDao.
  */
 @Entity(primaryKeys = ["query"])
-@TypeConverters(TypeConverters::class)
+@TypeConverters(Converters::class)
 data class RecipeSearchResult(
     // User's original query
     val query: String,

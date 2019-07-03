@@ -29,6 +29,7 @@ import retrofit2.http.Query
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 interface RecipeApi {
+    //https://www.food2fork.com/api/search?key=dadc63b6325aaf398163b40fea9b5e79&q=chocolate
     @GET("api/search")
     fun searchRecipe(
         @Query("key") key: String,
@@ -36,7 +37,6 @@ interface RecipeApi {
         @Query("page") page: String
     ): LiveData<ApiResponse<RecipeSearchResponse>>
 
-    // GET RECIPE REQUEST
     @GET("api/get")
     fun getRecipe(
         @Query("key") key: String,

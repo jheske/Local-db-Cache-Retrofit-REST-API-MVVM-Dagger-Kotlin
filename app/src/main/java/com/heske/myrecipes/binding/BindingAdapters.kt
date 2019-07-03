@@ -1,7 +1,13 @@
-package com.heske.myrecipes.requests.responses
+package com.heske.myrecipes.binding
 
-import com.google.gson.annotations.SerializedName
-import com.heske.myrecipes.models.Recipe
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.heske.myrecipes.R
+import com.heske.myrecipes.models.Category
+import com.heske.myrecipes.ui.categorylist.CategoryListAdapter
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -24,21 +30,22 @@ import com.heske.myrecipes.models.Recipe
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+@BindingAdapter("categoryRecyclerListItems")
+fun bindCategoryRecyclerList(recyclerView: RecyclerView, data: List<Category>?) {
+    val adapter = recyclerView.adapter as CategoryListAdapter
+    adapter.submitList(data)
+}
 
-/**
- * Retrofit creates this POJO from JSON data returned from
- * the query. The repository creates a recipe entity from it
- * to insert into the database.
- */
-data class RecipeSearchResponse(
-    @SerializedName("count")
-    val count: Int = 0,
 
-    @SerializedName("recipes")
-    val recipes: List<Recipe>?=null,
-
-    @SerializedName("error")
-    val error: String? = null
-) {
-    var nextPage: Int? = null
+@BindingAdapter("categoryListItemImageUrl")
+fun bindCategoryListItemImageUrl(imgView: ImageView, imageUrl: android.net.Uri?) {
+    imageUrl?.let {
+        Glide.with(imgView.context)
+            .load(imageUrl)
+            .apply(
+                RequestOptions()
+                    .error(R.drawable.barbeque)
+            )
+            .into(imgView)
+    }
 }

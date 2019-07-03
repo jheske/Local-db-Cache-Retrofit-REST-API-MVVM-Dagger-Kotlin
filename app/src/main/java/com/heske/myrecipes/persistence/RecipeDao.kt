@@ -38,7 +38,7 @@ abstract class RecipeDao {
     abstract fun insertRecipes(recipes: List<Recipe>): LongArray
 
     @Insert(onConflict = REPLACE)
-    abstract fun insertRecipe(recipe: Recipe)
+    abstract fun insertRecipe(recipe: Recipe): Long
 
     @Query("UPDATE recipes SET title = :title, publisher = :publisher, image_url = :image_url, social_rank = :social_rank " + "WHERE recipe_id = :recipe_id")
     abstract fun updateRecipe(recipe_id: String, title: String, publisher: String, image_url: String, social_rank: Float)
@@ -52,7 +52,7 @@ abstract class RecipeDao {
     /** RecipeSearchResult table methods **/
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertSearchResult(result: RecipeSearchResult)
+    abstract fun insertSearchResult(result: RecipeSearchResult): Long
 
     @Query("SELECT * FROM RecipeSearchResult WHERE `query` = :query")
     abstract fun search(query: String): LiveData<RecipeSearchResult>

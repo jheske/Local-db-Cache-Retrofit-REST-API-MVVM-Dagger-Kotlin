@@ -32,7 +32,7 @@ import javax.inject.Inject
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : ViewModel() {
-    // Looks like the Recipe object is wrapped in an object so it
+    // Recipe object is wrapped in an object, so it
     // can be tested for exists and correctness.
     val _recipeId: MutableLiveData<RecipeId> = MutableLiveData()
 

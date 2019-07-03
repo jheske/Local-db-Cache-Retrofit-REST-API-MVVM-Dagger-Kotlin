@@ -6,6 +6,7 @@ import com.heske.myrecipes.AppExecutors
 import com.heske.myrecipes.models.Recipe
 import com.heske.myrecipes.persistence.RecipeDao
 import com.heske.myrecipes.persistence.RecipeDatabase
+import com.heske.myrecipes.persistence.RecipeSearchResult
 import com.heske.myrecipes.requests.RecipeApi
 import com.heske.myrecipes.requests.responses.RecipeSearchResponse
 import com.heske.myrecipes.util.*
@@ -69,6 +70,8 @@ class RecipeRepository @Inject constructor(
 
     /**
      * Download a list of recipes
+     * The list doesn't include recipe ingredients or timestamp. They get filled
+     * in when an individual Recipe is fetched.
      */
     fun searchRecipesApi(query: String, pageNumber: Int): LiveData<Resource<List<Recipe>>> {
         return object : NetworkBoundResource<List<Recipe>, RecipeSearchResponse>(appExecutors) {
@@ -78,57 +81,57 @@ class RecipeRepository @Inject constructor(
             // RecipeSearchResult is a database table for storing the list
             // of Recipes along with some metadata about the search.
             override fun saveCallResult(item: RecipeSearchResponse) {
+                // recipe list will be null if the api key is expired
                 if (item.recipes == null)
                     return
                 Log.d(TAG, "[saveCallResult] Received ${item.recipes.size} recipes ")
-//                val recipeIds = item.recipes.map {
-//                    it.recipe_id
-//                }
-//                val recipes = ArrayList<Recipe>(item.recipes.size)
-//                for (i in 0..recipes.size-1) {
-//
-//                }
-//                val recipeSearchResult = RecipeSearchResult(
-//                    query = query,
-//                    recipeIds = recipeIds,
-//                    total = item.count,
-//                    nextPage = item.nextPage
-//                )
-//                db.runInTransaction {
-//                    recipeDao.insertRecipes(item.recipes)
-//                    recipeDao.insertSearchResult(recipeSearchResult)
-//                }
+                val recipeIds = item.recipes.map {
+                    it.recipe_id
+                }
+
+                item.recipes.forEach {
+                    // if the recipe already exists... I don't want to set the
+                    // ingredients or timestamp b/c
+                    // they will be erased
+                    val insertRowId = recipeDao.insertRecipe(it)
+                    if (insertRowId.equals(-1)) {
+                        Log.d(TAG, "saveCallResult $it.title: CONFLICT... This recipe is already in the cache")
+
+                        val rowId = recipeDao.updateRecipe(
+                            it.recipe_id,
+                            it.title,
+                            it.publisher,
+                            it.image_url,
+                            it.social_rank
+                        )
+                    }
+                }
+
+                val recipeSearchResult = RecipeSearchResult(
+                    query = query,
+                    recipeIds = recipeIds,
+                    total = item.count,
+                    nextPage = item.nextPage
+                )
+
+                // Save query metadata
+                db.runInTransaction {
+                    //    val recipeRowIds = recipeDao.insertRecipes(item.recipes)
+                    val searchResultsRowId = recipeDao.insertSearchResult(recipeSearchResult)
+                    Log.d(TAG, "[saveCallResult] searchRowId: $searchResultsRowId")
+                }
             }
-//                if (item.recipes != null) { // recipe list will be null if the api key is expired
-//                    val recipes = arrayOfNulls<Recipe>(item.recipes.size)
-//                    var index = 0
-//                    for (rowid in recipeDao.insertRecipes(
-//                        item.recipes.toArray(recipes) as Array<Recipe>
-//                    )) {
-//                        if (rowid == -1) {
-//                            Log.d(TAG, "saveCallResult: CONFLICT... This recipe is already in the cache")
-//                            // if the recipe already exists... I don't want to set the ingredients or timestamp b/c
-//                            // they will be erased
-//                            recipeDao.updateRecipe(
-//                                recipes[index].recipe_id,
-//                                recipes[index].title,
-//                                recipes[index].publisher,
-//                                recipes[index].image_url,
-//                                recipes[index].social_rank
-//                            )
-//                        }
-//                        index++
-//                    }
-//                }
-
-
             // true = there's no data, should fetch it from the Network
             override fun shouldFetch(data: List<Recipe>?) = true
 
-            override fun loadFromDb() = recipeDao.searchRecipes(
-                query,
-                pageNumber
-            )
+            override fun loadFromDb(): LiveData<List<Recipe>> {
+                val recipes =
+                    recipeDao.searchRecipes(
+                        query,
+                        pageNumber
+                    )
+                return recipes
+            }
 
             // Make the network call to get the data
             override fun createCall() = recipeApi

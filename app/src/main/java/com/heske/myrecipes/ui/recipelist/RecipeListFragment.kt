@@ -1,20 +1,20 @@
 package com.heske.myrecipes.ui.recipelist
 
-import android.content.Context
 import android.os.Bundle
-import android.os.IBinder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.heske.myrecipes.AppExecutors
 import com.heske.myrecipes.R
 import com.heske.myrecipes.databinding.FragmentRecipeListBinding
 import com.heske.myrecipes.di.Injectable
+import com.heske.myrecipes.util.TAG
 import javax.inject.Inject
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
@@ -49,6 +49,8 @@ class RecipeListFragment : Fragment(), Injectable {
 
     lateinit var binding: FragmentRecipeListBinding
 
+    lateinit var adapter: RecipeListAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,36 +68,25 @@ class RecipeListFragment : Fragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val query = RecipeListFragmentArgs.fromBundle(arguments!!).query
+        adapter = RecipeListAdapter()
+        binding.recipeListRecyler.adapter = RecipeListAdapter()
+        binding.viewModel = recipeListViewModel
+        binding.setLifecycleOwner(viewLifecycleOwner)
+        subscribeOvserver()
+        recipeListViewModel.runQuery(query)
+       // binding.recipeList = recipeListViewModel.recipeList
+        // Gotta observe recipe LiveData, or its switchmap in the viewModel will
+        // never be triggered, even when _recipeId.value is set.
 
     }
 
-    private fun getList() {
-
-    }
-
-    private fun dismissKeyboard(windowToken: IBinder) {
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.hideSoftInputFromWindow(windowToken, 0)
-    }
-/*
-
- private fun initRecipeList(viewModel: RepoViewModel) {
-        viewModel.contributors.observe(viewLifecycleOwner, Observer { listResource ->
+    private fun subscribeOvserver() {
+        recipeListViewModel.recipeList.observe(viewLifecycleOwner, Observer { listResource ->
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
-            if (listResource?.data != null) {
-                adapter.submitList(listResource.data)
-            } else {
-                adapter.submitList(emptyList())
-            }
+            Log.d(TAG,"New recipe list!!")
+            adapter.submitList(listResource.data)
         })
     }
-
- */
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        recipeListViewModel = ViewModelProviders.of(this, viewModelFactory)
-//            .get(RecipeListViewModel::class.java)
-//        recipeListViewModel.setId(params.owner, params.name)    }
-//
 }

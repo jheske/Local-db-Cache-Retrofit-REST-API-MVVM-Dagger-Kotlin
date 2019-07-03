@@ -5,40 +5,23 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.heske.myrecipes.util.Status"/>
-
-        <import type="com.heske.myrecipes.util.Resource"/>
-
-        <import type="androidx.lifecycle.LiveData"/>
-
-        <import type="com.heske.myrecipes.models.Recipe"/>
-
         <variable
                 name="viewModel"
-                type="com.heske.myrecipes.ui.recipe.RecipeViewModel"/>
-
-        <variable
-                name="recipe"
-                type="LiveData&lt;Resource&lt;Recipe>>"/>
+                type="com.heske.myrecipes.ui.recipelist.RecipeListViewModel"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            tools:context="com.heske.myrecipes.MainActivity"
-            tools:ignore="MergeRootFrame">
+            tools:context=".ui.categorylist.CategoryListActivity">
 
-        <TextView
-                android:id="@+id/recipe_detail_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/recipe_title_text_size"
-                android:textColor="#000"
-                android:text="Received Recipes"
-                tools:text="Received Recipes"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recipe_list_recyler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

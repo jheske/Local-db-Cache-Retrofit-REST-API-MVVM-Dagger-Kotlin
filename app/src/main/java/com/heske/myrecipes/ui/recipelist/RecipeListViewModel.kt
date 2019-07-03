@@ -1,7 +1,13 @@
 package com.heske.myrecipes.ui.recipelist
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.heske.myrecipes.models.Recipe
 import com.heske.myrecipes.repositories.RecipeRepository
+import com.heske.myrecipes.util.AbsentLiveData
+import com.heske.myrecipes.util.Resource
 import javax.inject.Inject
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
@@ -40,8 +46,45 @@ import javax.inject.Inject
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
-//
 class RecipeListViewModel @Inject constructor(recipeRepository: RecipeRepository) : ViewModel() {
 
+    // The query is wrapped in a QueryWrapper object so the LiveData can be tested
+    // for exists and correctness.
+    val _query: MutableLiveData<QueryWrapper> = MutableLiveData()
+    val query: LiveData<QueryWrapper>
+        get() = _query
+
+    // Must add at least one observer on a LiveData (usually in the Fragment),
+    // or the switchmap will never  trigger, not even when _query.value is set.
+    val recipeList: LiveData<Resource<List<Recipe>>> = Transformations
+        .switchMap(_query) { input ->
+            input.ifExists { queryString ->
+                recipeRepository.searchRecipesApi(queryString,1)
+            }
+        }
+
+    // Called by RecipeFragment to request a  recipe.
+    // Set recipeLiveData to trigger recipeRepository.searchRecipesApi().
+    fun runQuery(query: String) {
+        val update = QueryWrapper(query)
+        if (_query.value == update) {
+            return
+        }
+        _query.value = update
+    }
+
+    /**
+     * Google probably uses this for testing whether or not
+     * the LiveData object exists and is correct.
+     */
+    data class QueryWrapper(val query: String) {
+        fun <T> ifExists(f: (String) -> LiveData<T>): LiveData<T> {
+            return if (query.isBlank()) {
+                AbsentLiveData.create()
+            } else {
+                f(query)
+            }
+        }
+    }
 }
+

@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/navigation"
         app:startDestination="@id/categoryListFragment">
 
     <fragment
             android:id="@+id/categoryListFragment"
             android:name="com.heske.myrecipes.ui.categorylist.CategoryListFragment"
-            android:label="Categories">
+            android:label="Categories"
+            tools:layout="@layout/fragment_category_list">
+
+        <action android:id="@+id/action_categoryList_to_recipeList"
+                app:destination="@id/recipeListFragment"
+                app:popUpTo="@+id/categoryListFragment"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/recipeListFragment"
+            android:name="com.heske.myrecipes.ui.recipelist.RecipeListFragment"
+            android:label="Recipes"
+            tools:layout="@layout/fragment_recipe_list">
+        <argument android:name="query"
+                  app:argType="string"/>
     </fragment>
 
 </navigation>

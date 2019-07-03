@@ -13,7 +13,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.recipelist.RecipeListActivity">
+            tools:context=".ui.categorylist.CategoryListActivity">
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/category_list_recyler"

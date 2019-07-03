@@ -64,6 +64,24 @@ Google's GithubBrowserSample app in Kotlin, which you can find on their googlesa
 
 This is a work in progress and nowhere near done. Feel free to submit questions, comments, and pull requests.
 
-* At present, it contains all the Room, Retrofit, Repository, Dagger, AndroidX, and Navigation infrastructure. 
-* It's set up for MVVM, but the main Fragments and ViewModels are not implemented yet, so it runs but there's nothing on the screen.
-* Google does a lot of super complicated stuff in their code that I have to admit I don't completely understand yet. I'm slowly working through it and incorporating the parts that are relevant to this app.
+## Current State of the App
+* The project contains all the Room, Retrofit, Repository, Dagger, AndroidX, Navigation, and MVVM  infrastructure. 
+* All the main components function and Categories, Recipes, and Recipe screens display, but there are work-in-progress-related issues.
+* Since I'm combining Google's app architecture in Kotlin with Mitch's Recipe app in Java, I tried to stick to Mitch's original package structure while integrating Google's best practices inasmuch as I understand them so far.
+* I stuck to Mitch's variable and function names as much as possible, but did change some along the way to make the code seem more clear to me. 
+* Where Mitch combines the UI for the categories and recipes list screens into one ```recipelist``` package, I split them into two packages. It just seemed to make the code easier to follow.
+
+## Work-in-Progress Issues
+### General
+* I haven't integrated Mitch's useful status reporting and error handling, and there's no ProgressBar or SearchView yet.
+* Google's does a lot of super complicated stuff in their code that I have to admit I don't completely understand yet. I'm slowly working through it and incorporating the parts that are relevant to this app.
+* Google's app is heavily factored and it's gonna take some time to understand all the levels of redirection employed in the architecture. 
+* Where stuff got too layered, I opted for more straightforward patterns that I'm familiar with, particularly with respect to data binding.
+ 
+### Categories Screen (the Home Screen)
+* There's no SearchView, because there's is a new paradigm I haven't investigated yet.
+### Recipe List Screen
+* For some reason the RecipeList observer is triggered twice, causing the screen to flash.
+* Data binding for the Recipe layout doesn't work yet. The image shows up, but that's it.
+### Recipe Screen
+* The layout isn't done yet. I have to sort out the data and data binding.

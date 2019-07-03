@@ -1,8 +1,10 @@
 package com.heske.myrecipes.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.TypeConverters
 import com.heske.myrecipes.persistence.Converters
+import kotlinx.android.parcel.Parcelize
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -30,6 +32,7 @@ import com.heske.myrecipes.persistence.Converters
     primaryKeys = ["recipe_id"]
 )
 @TypeConverters(Converters::class)
+@Parcelize
 data class Recipe(
     val recipe_id: String,
     val title: String,
@@ -38,4 +41,7 @@ data class Recipe(
     val social_rank: Float,
     val ingredients: List<String>?,
     var timestamp: Int?
-)
+): Parcelable {
+    val social_rank_string: String
+        get() = social_rank.toString()
+}

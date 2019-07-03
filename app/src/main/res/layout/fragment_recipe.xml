@@ -13,18 +13,19 @@
         <import type="com.heske.myrecipes.models.Recipe"/>
 
         <variable
-                name="viewModel"
-                type="com.heske.myrecipes.ui.recipe.RecipeViewModel"/>
-
-        <variable
                 name="recipe"
                 type="LiveData&lt;Resource&lt;Recipe>>"/>
+
+        <variable
+                name="clickListener"
+                type="android.view.View.OnClickListener"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
+            android:onClick="@{clickListener}"
             tools:context="com.heske.myrecipes.MainActivity"
             tools:ignore="MergeRootFrame">
 
@@ -45,7 +46,7 @@
                 android:textSize="@dimen/recipe_title_text_size"
                 android:textColor="#000"
                 android:padding="7dp"
-                android:text="Some Recipe title"
+                android:text="@{recipe.data.title}"
                 tools:text="Some Recipe title"
                 app:layout_constraintTop_toBottomOf="@+id/recipe_detail_image"
                 app:layout_constraintLeft_toLeftOf="parent"/>
@@ -56,8 +57,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/recipe_publisher_text_size"
                 android:textStyle="bold"
-                android:text="Ingredients"
-                tools:text="Ingredients"
+                android:text="@string/txt_ingredients"
+                tools:text="@string/txt_ingredients"
                 app:layout_constraintTop_toBottomOf="@+id/recipe_detail_title"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
@@ -65,9 +66,9 @@
                 android:id="@+id/recipe_social_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{recipe.data.social_rank_string}"
                 android:textSize="@dimen/recipe_publisher_text_size"
                 android:textColor="@color/red"
-                android:text="100"
                 app:layout_constraintTop_toBottomOf="@+id/ingredients_title"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 

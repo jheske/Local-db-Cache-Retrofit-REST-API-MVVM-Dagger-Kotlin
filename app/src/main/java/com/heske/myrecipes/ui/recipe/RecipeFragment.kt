@@ -64,18 +64,18 @@ class RecipeFragment() : Fragment(), Injectable {
             )
         recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RecipeViewModel::class.java)
+        binding.setLifecycleOwner(viewLifecycleOwner)
+        binding.recipe = recipeViewModel.recipe
+        // Gotta observe the LiveData, or its switchmap in the viewModel will
+        // never be triggered, even when its value changes.
+        recipeViewModel.recipe.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG,"recipeId value has changed!!")
+        })
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recipeViewModel.setRecipeId(getString(R.string.txt_test_recipe_id))
-        binding.setLifecycleOwner(viewLifecycleOwner)
-        binding.recipe = recipeViewModel.recipe
-        // Gotta observe recipe LiveData, or its switchmap in the viewModel will
-        // never be triggered, even when _recipeId.value is set.
-        recipeViewModel.recipe.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG,"recipeId value has changed!!")
-        })
     }
 
     /**

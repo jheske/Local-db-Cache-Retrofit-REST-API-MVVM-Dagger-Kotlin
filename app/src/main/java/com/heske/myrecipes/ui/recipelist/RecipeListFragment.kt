@@ -85,8 +85,12 @@ class RecipeListFragment : Fragment(), Injectable {
         recipeListViewModel.recipeList.observe(viewLifecycleOwner, Observer { listResource ->
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
-            Log.d(TAG,"New recipe list!!")
-            adapter.submitList(listResource.data)
+            Log.d(TAG, "New recipe list!!")
+            if (listResource?.data != null) {
+                adapter.submitList(listResource.data)
+            } else {
+                adapter.submitList(emptyList())
+            }
         })
     }
 }

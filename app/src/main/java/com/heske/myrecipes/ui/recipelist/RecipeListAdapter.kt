@@ -3,6 +3,7 @@ package com.heske.myrecipes.ui.recipelist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -81,13 +82,11 @@ class RecipeListAdapter :
         }
     }
 
-    // Navigate to RecipesListFragment, passing the recipe title, which RecipesList
-// will use to query for related recipes.
     private fun createOnClickListener(recipe: Recipe): View.OnClickListener {
         return View.OnClickListener {
-         //   it.findNavController().navigate(
-          //      RecipeListFragmentDirections.actionRecipeListToRecipe(recipe)
-         //   )
+            it.findNavController().navigate(
+                RecipeListFragmentDirections.actionRecipeListToRecipe(recipe)
+            )
         }
     }
 

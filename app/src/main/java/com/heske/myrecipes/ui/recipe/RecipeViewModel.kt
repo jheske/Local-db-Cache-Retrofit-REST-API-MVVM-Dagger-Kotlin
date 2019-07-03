@@ -49,16 +49,7 @@ class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : 
             }
         }
 
-    // Called from RecipeFragment RetryCallback
-    // retry the recipe request.
-    fun retry() {
-        val recipeId = _recipeId.value?.recipeName
-        if (recipeId != null) {
-            _recipeId.value = RecipeId(recipeId)
-        }
-    }
-
-    // Called by RecipeFragment to request a  recipe.
+    // Called by RecipeFragment to request a recipe.
     // Set recipeLiveData to trigger recipeRepository.searchRecipesApi().
     fun setRecipeId(recipeName: String) {
         val update = RecipeId(recipeName)

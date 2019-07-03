@@ -1,8 +1,8 @@
 package com.heske.myrecipes.requests
 
 import androidx.lifecycle.LiveData
-import com.heske.myrecipes.models.Recipe
 import com.heske.myrecipes.requests.responses.ApiResponse
+import com.heske.myrecipes.requests.responses.RecipeResponse
 import com.heske.myrecipes.requests.responses.RecipeSearchResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -41,5 +41,5 @@ interface RecipeApi {
     fun getRecipe(
         @Query("key") key: String,
         @Query("rId") recipe_id: String
-    ): LiveData<ApiResponse<Recipe>>
+    ): LiveData<ApiResponse<RecipeResponse>>
 }

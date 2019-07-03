@@ -8,6 +8,7 @@ import com.heske.myrecipes.persistence.RecipeDao
 import com.heske.myrecipes.persistence.RecipeDatabase
 import com.heske.myrecipes.persistence.RecipeSearchResult
 import com.heske.myrecipes.requests.RecipeApi
+import com.heske.myrecipes.requests.responses.RecipeResponse
 import com.heske.myrecipes.requests.responses.RecipeSearchResponse
 import com.heske.myrecipes.util.*
 import java.util.concurrent.TimeUnit
@@ -47,12 +48,16 @@ class RecipeRepository @Inject constructor(
     /**
      * Download one recipe.
      */
-    fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>> {
-        return object : NetworkBoundResource<Recipe, Recipe>(appExecutors) {
+    fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>>   {  //fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>> {
+        return object : NetworkBoundResource<Recipe, RecipeResponse>(appExecutors) {
             // Called after download completes to insert downloaded
             // data into the database.
-            override fun saveCallResult(item: Recipe) {
-                recipeDao.insertRecipe(item)
+            override fun saveCallResult(item: RecipeResponse) {
+                // will be null if API key is expired
+                if (item.recipe != null) {
+                    item.recipe.timestamp = (System.currentTimeMillis() / 1000).toInt()
+                    recipeDao.insertRecipe(item.recipe)
+                }
             }
 
             // true = there's no data, should fetch it from the Network
@@ -63,8 +68,8 @@ class RecipeRepository @Inject constructor(
             )
 
             // Make the network call to get the data
-            override fun createCall() = recipeApi.getRecipe(API_KEY, recipeId)
-
+            override fun createCall()
+                    = recipeApi.getRecipe(API_KEY, recipeId)
         }.asLiveData()
     }
 

@@ -17,12 +17,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/card_view"
             android:onClick="@{clickListener}"
-            app:cardElevation="10dp">
+            app:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
+                android:layout_margin="@dimen/default_margin"
                 tools:context="com.heske.myrecipes.MainActivity"
                 tools:ignore="MergeRootFrame">
 
@@ -34,7 +35,8 @@
                     android:contentDescription="@{recipe.title}"
                     android:src="@drawable/ic_launcher_background"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:recipeListItemImageUrl="@{recipe.image_url}"/>
+                    app:recipeListItemImageUrl="@{recipe.image_url}"
+                    tools:src="@drawable/brunch"/>
 
             <TextView
                     android:id="@+id/recipe_title"

@@ -78,10 +78,15 @@ This is a work in progress and nowhere near done. Feel free to submit questions,
 * Google's app is heavily factored and it's gonna take some time to understand all the levels of redirection employed in the architecture. 
 * Where stuff got too layered, I opted for more straightforward patterns that I'm familiar with, particularly with respect to data binding.
  
-### Categories Screen (the Home Screen)
-* There's no SearchView, because there's is a new paradigm I haven't investigated yet.
+### Recipe Categories Screen (the Home Screen)
+* There's no SearchView, because Google uses a new paradigm I haven't investigated yet.
+* In layout_category_list_item.xml and layout_recipe_list_item.xml I use the app:cardUseCompatPadding="true" attribute in the CardView, very convenient! No need for list item Decorations.
+
+
 ### Recipe List Screen
 * For some reason the RecipeList observer is triggered twice, causing the screen to flash.
+
 * Data binding for the Recipe layout doesn't work yet. The image shows up, but that's it.
+
 ### Recipe Screen
 * The layout isn't done yet. I have to sort out the data and data binding.

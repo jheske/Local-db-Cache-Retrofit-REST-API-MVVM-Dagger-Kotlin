@@ -1,14 +1,15 @@
 package com.heske.myrecipes.ui.recipelist
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import com.heske.myrecipes.AppExecutors
+import com.heske.myrecipes.R
 import com.heske.myrecipes.databinding.LayoutRecipeListItemBinding
 import com.heske.myrecipes.models.Recipe
+import com.heske.myrecipes.ui.common.DataBoundListAdapter
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  *
@@ -33,75 +34,48 @@ import com.heske.myrecipes.models.Recipe
  */
 
 /**
- * A RecyclerView adapter for [Repo] class.
+ * A RecyclerView adapter for [Recip] class.
+ * Extends DataBoundListAdapter, which abstracts all the ViewHolder code.
  */
-class RecipeListAdapter :
-    ListAdapter<Recipe, RecipeListAdapter.AdapterViewHolder>(DiffCallback()) {
+//class RecipeListAdapter :
+//    ListAdapter<Recipe, RecipeListAdapter.AdapterViewHolder>(DiffCallback())
+class RecipeListAdapter(
+    private val dataBindingComponent: DataBindingComponent,
+    appExecutors: AppExecutors,
+    private val recipeClickCallback: ((Recipe) -> Unit)?
+) :
+    DataBoundListAdapter<Recipe, LayoutRecipeListItemBinding>(
+        appExecutors = appExecutors,
+        diffCallback = object : DiffUtil.ItemCallback<Recipe>() {
+            override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
+                return oldItem.recipe_id == newItem.recipe_id
+            }
 
-    /**
-     * The FlickrRvAdapterViewHolder constructor takes the binding variable from the associated
-     * GridViewItem, which nicely gives it access to the full object information.
-     */
-    class AdapterViewHolder(private var binding: LayoutRecipeListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(
-            listItemlickListener: View.OnClickListener,
-            listItem: Recipe
-        ) {
-            binding.apply {
-                // Binding variables are in listitem_flickr_image.xml.
-                clickListener = listItemlickListener
-                recipe = listItem
-                executePendingBindings()
+            override fun areContentsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
+                return oldItem.title == newItem.title
             }
         }
-    }
-
-    /**
-     * Create new [RecyclerView] item views (invoked by the layout manager)
-     */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-            AdapterViewHolder {
-        return AdapterViewHolder(
-            LayoutRecipeListItemBinding
-                .inflate(LayoutInflater.from(parent.context), parent, false)
+    ) {
+    override fun createBinding(parent: ViewGroup): LayoutRecipeListItemBinding {
+        val binding = DataBindingUtil.inflate<LayoutRecipeListItemBinding>(
+            LayoutInflater.from(parent.context),
+            R.layout.layout_recipe_list_item,
+            parent,
+            false,
+            dataBindingComponent
         )
-    }
-
-    /**
-     * Replaces the contents of a view (invoked by the layout manager)
-     */
-    override fun onBindViewHolder(holder: AdapterViewHolder, position: Int) {
-        getItem(position).let { recipe ->
-            with(holder) {
-                itemView.tag = recipe
-                val clickListener = createOnClickListener(recipe)
-                bind(clickListener, recipe)
+        // Invoke the function defined in RecipeListFragment and passed
+        // into the adapter as a param.
+        binding.root.setOnClickListener {
+            binding.recipe?.let {
+                recipeClickCallback?.invoke(it)
             }
         }
+        return binding
     }
 
-    private fun createOnClickListener(recipe: Recipe): View.OnClickListener {
-        return View.OnClickListener {
-            it.findNavController().navigate(
-                RecipeListFragmentDirections.actionRecipeListToRecipe(recipe)
-            )
-        }
-    }
-
-    /**
-     * Allows the RecyclerView to determine which items have changed when the [List] of
-     * images has been updated.
-     */
-    class DiffCallback : DiffUtil.ItemCallback<Recipe>() {
-        override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
-            return oldItem.recipe_id === newItem.recipe_id
-        }
-
-        override fun areContentsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
-            return oldItem.title == newItem.title
-        }
+    override fun bind(binding: LayoutRecipeListItemBinding, item: Recipe) {
+        binding.recipe = item
     }
 }
 

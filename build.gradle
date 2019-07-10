@@ -32,7 +32,7 @@ buildscript {
         espressoVersion = '3.1.0-alpha4'
         fragmentKtxVersion = '1.1.0-beta01'
         glideVersion = '4.9.0'
-        gradleVersion = '3.4.1'
+        gradleVersion = '3.4.2'
         gsonVersion = '2.8.2'
         junitVersion = '4.12'
         koinVersion = '1.0.2'

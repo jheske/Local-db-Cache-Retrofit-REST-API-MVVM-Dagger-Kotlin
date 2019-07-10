@@ -8,6 +8,11 @@
         <variable
                 name="viewModel"
                 type="com.heske.myrecipes.ui.recipelist.RecipeListViewModel"/>
+
+        <!-- RecipeListFragmentArgs is generated at compile time -->
+        <variable
+                name="args"
+                type="com.heske.myrecipes.ui.recipelist.RecipeListFragmentArgs" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

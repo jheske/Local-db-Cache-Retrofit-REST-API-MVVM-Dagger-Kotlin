@@ -89,13 +89,15 @@ class RecipeListFragment : Fragment(), Injectable {
             .get(RecipeListViewModel::class.java)
         binding.viewModel = recipeListViewModel
 
+        recipeListViewModel.runQuery(params.query)
+
         binding.args = params
 
         binding.setLifecycleOwner(viewLifecycleOwner)
 
         // Syntax is kinda convoluted. Pass the onClick handler
         // to adapter as a parameter, which binds it in createBinding().
-        adapter = RecipeListAdapter(
+        val recipeListAdapter = RecipeListAdapter(
             dataBindingComponent,
             appExecutors
         ) { recipe ->
@@ -104,10 +106,9 @@ class RecipeListFragment : Fragment(), Injectable {
                     .actionRecipeListToRecipe(recipe)
             )
         }
-        binding.recipeListRecyler.adapter = adapter
-
+        binding.recipeListRecyler.adapter = recipeListAdapter
+        this.adapter = recipeListAdapter
         subscribeOvserver()
-        recipeListViewModel.runQuery(params.query)
     }
 
     private fun subscribeOvserver() {
@@ -117,11 +118,12 @@ class RecipeListFragment : Fragment(), Injectable {
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
             Log.d(TAG, "New recipe list!!")
-            //   if (listResource?.data != null) {
-            adapter.submitList(listResource?.data)
-            // } else {
-            //     adapter.submitList(emptyList())
-            // }
+            if (listResource.data != null) {
+                adapter.submitList(listResource?.data)
+            }
+            else {
+                adapter.submitList(emptyList())
+            }
         })
     }
 }

@@ -5,10 +5,6 @@
 
     <data>
         <variable
-                name="clickListener"
-                type="android.view.View.OnClickListener"/>
-
-        <variable
                 name="recipe"
                 type="com.heske.myrecipes.models.Recipe"/>
     </data>
@@ -16,7 +12,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/card_view"
-            android:onClick="@{clickListener}"
             app:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout

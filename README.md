@@ -90,3 +90,11 @@ This is a work in progress and nowhere near done. Feel free to submit questions,
 
 ### Recipe Screen
 * The layout isn't done yet. I have to sort out the data and data binding.
+
+## Resources
+
+[REST API with MVVM and Retrofit2](https://codingwithmitch.com/courses/rest-api-mvvm-retrofit2/)
+
+[GithubBrowser Google Sample](googlesamples/android-architecture-components)
+
+[Setting Up the Search Interface](https://developer.android.com/training/search/setup.html)

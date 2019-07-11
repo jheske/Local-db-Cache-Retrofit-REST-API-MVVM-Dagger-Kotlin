@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/navigation"
         app:startDestination="@id/categoryListFragment">
 
@@ -34,7 +35,7 @@
             android:label="Recipe"
             tools:layout="@layout/fragment_recipe">
         <argument android:name="recipe_id"
-                  app:argType="com.heske.myrecipes.models.Recipe"/>
+                  app:argType="string"/>
     </fragment>
 
 </navigation>

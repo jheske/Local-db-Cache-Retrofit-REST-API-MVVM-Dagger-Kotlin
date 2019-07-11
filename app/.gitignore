@@ -7,3 +7,4 @@
 .DS_Store
 /build
 /captures
+/src/main/java/com/heske/myrecipes/util/ApiKey.kt

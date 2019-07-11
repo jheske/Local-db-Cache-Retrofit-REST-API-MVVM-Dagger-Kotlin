@@ -1,14 +1,15 @@
 package com.heske.myrecipes.ui.categorylist
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import com.heske.myrecipes.AppExecutors
+import com.heske.myrecipes.R
 import com.heske.myrecipes.databinding.LayoutCategoryListItemBinding
 import com.heske.myrecipes.models.Category
+import com.heske.myrecipes.ui.common.DataBoundListAdapter
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
  * 
@@ -35,76 +36,116 @@ import com.heske.myrecipes.models.Category
 /**
  * A RecyclerView adapter for [Repo] class.
  */
-class CategoryListAdapter :
-    ListAdapter<Category, CategoryListAdapter.AdapterViewHolder>(DiffCallback()) {
+class CategoryListAdapter(
+    private val dataBindingComponent: DataBindingComponent,
+    private val appExecutors: AppExecutors,
+    private val categoryClickCallback: ((Category) -> Unit)?
+) :
+    DataBoundListAdapter<Category, LayoutCategoryListItemBinding>(
+        appExecutors = appExecutors,
+        diffCallback = object : DiffUtil.ItemCallback<Category>() {
+            override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+                return oldItem == newItem
+            }
 
-    /**
-     * The FlickrRvAdapterViewHolder constructor takes the binding variable from the associated
-     * GridViewItem, which nicely gives it access to the full object information.
-     */
-    class AdapterViewHolder(private var binding: LayoutCategoryListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(
-            buttonClickListener: View.OnClickListener,
-            listItem: Category
-        ) {
-            binding.apply {
-                // Binding variables are in listitem_flickr_image.xml.
-                clickListener = buttonClickListener
-                category = listItem
-                executePendingBindings()
+            override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+                return oldItem.title == newItem.title
             }
         }
-    }
-
-    /**
-     * Create new [RecyclerView] item views (invoked by the layout manager)
-     */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
-            AdapterViewHolder {
-        return AdapterViewHolder(
-            LayoutCategoryListItemBinding
-                .inflate(LayoutInflater.from(parent.context), parent, false)
+    ) {
+    override fun createBinding(parent: ViewGroup): LayoutCategoryListItemBinding {
+        val binding = DataBindingUtil.inflate<LayoutCategoryListItemBinding>(
+            LayoutInflater.from(parent.context),
+            R.layout.layout_category_list_item,
+            parent,
+            false,
+            dataBindingComponent
         )
-    }
-
-    /**
-     * Replaces the contents of a view (invoked by the layout manager)
-     */
-    override fun onBindViewHolder(holder: AdapterViewHolder, position: Int) {
-
-        getItem(position).let { category ->
-            with(holder) {
-                itemView.tag = category
-                val clickListener = createOnClickListener(category.title)
-                bind(clickListener, category)
+        // Invoke the function defined in CategoryListFragment and passed
+        // into the adapter as a param.
+        binding.root.setOnClickListener {
+            binding.category?.let {
+                categoryClickCallback?.invoke(it)
             }
         }
+        return binding
     }
 
-    // Navigate to RecipesListFragment, passing the category title, which RecipesList
-// will use to query for related recipes.
-    private fun createOnClickListener(query: String): View.OnClickListener {
-        return View.OnClickListener {
-            it.findNavController().navigate(
-                CategoryListFragmentDirections.actionCategoryListToRecipeList(query)
-            )
-        }
+    override fun bind(binding: LayoutCategoryListItemBinding, item: Category) {
+        binding.category = item
     }
 }
 
-/**
- * Allows the RecyclerView to determine which items have changed when the [List] of
- * images has been updated.
- */
-class DiffCallback : DiffUtil.ItemCallback<Category>() {
-    override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
-        return oldItem.title === newItem.title
-    }
-
-    override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
-        return oldItem.title == newItem.title
-    }
-}
-
+//class CategoryListAdapter :
+//    ListAdapter<Category, CategoryListAdapter.AdapterViewHolder>(DiffCallback()) {
+//
+//    /**
+//     * The FlickrRvAdapterViewHolder constructor takes the binding variable from the associated
+//     * GridViewItem, which nicely gives it access to the full object information.
+//     */
+//    class AdapterViewHolder(private var binding: LayoutCategoryListItemBinding) :
+//        RecyclerView.ViewHolder(binding.root) {
+//
+//        fun bind(
+//            buttonClickListener: View.OnClickListener,
+//            listItem: Category
+//        ) {
+//            binding.apply {
+//                // Binding variables are in listitem_flickr_image.xml.
+//                clickListener = buttonClickListener
+//                category = listItem
+//                executePendingBindings()
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Create new [RecyclerView] item views (invoked by the layout manager)
+//     */
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
+//            AdapterViewHolder {
+//        return AdapterViewHolder(
+//            LayoutCategoryListItemBinding
+//                .inflate(LayoutInflater.from(parent.context), parent, false)
+//        )
+//    }
+//
+//    /**
+//     * Replaces the contents of a view (invoked by the layout manager)
+//     */
+//    override fun onBindViewHolder(holder: AdapterViewHolder, position: Int) {
+//
+//        getItem(position).let { category ->
+//            with(holder) {
+//                itemView.tag = category
+//                val clickListener = createOnClickListener(category.title)
+//                bind(clickListener, category)
+//            }
+//        }
+//    }
+//
+//    // Navigate to RecipesListFragment, passing the category title, which RecipesList
+//// will use to query for related recipes.
+//    private fun createOnClickListener(query: String): View.OnClickListener {
+//        return View.OnClickListener {
+//            it.findNavController().navigate(
+//                CategoryListFragmentDirections.actionCategoryListToRecipeList(query)
+//            )
+//        }
+//    }
+//}
+//
+///**
+// * Allows the RecyclerView to determine which items have changed when the [List] of
+// * images has been updated.
+// */
+//class DiffCallback : DiffUtil.ItemCallback<Category>() {
+//    override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+//        return oldItem.title === newItem.title
+//    }
+//
+//    override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+//        return oldItem.title == newItem.title
+//    }
+//}
+//

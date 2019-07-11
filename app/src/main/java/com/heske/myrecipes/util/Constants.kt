@@ -27,8 +27,6 @@ const val TAG = "RECIPES"
 const val DATABASE_NAME = "recipes_db"
 const val BASE_URL = "https://www.food2fork.com"
 
-// YOU NEED YOUR OWN API KEY!!!!!!!!!!!!! https://www.food2fork.com/about/api
-const val API_KEY = "dadc63b6325aaf398163b40fea9b5e79"
 const val CONNECTION_TIMEOUT = 10L // 10 seconds
 const val READ_TIMEOUT = 2L // 2 seconds
 const val WRITE_TIMEOUT = 2L // 2 seconds

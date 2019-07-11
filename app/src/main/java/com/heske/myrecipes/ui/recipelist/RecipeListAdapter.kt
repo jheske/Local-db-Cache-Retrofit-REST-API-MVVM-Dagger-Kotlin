@@ -34,11 +34,9 @@ import com.heske.myrecipes.ui.common.DataBoundListAdapter
  */
 
 /**
- * A RecyclerView adapter for [Recip] class.
+ * A RecyclerView adapter for [Recipe] class.
  * Extends DataBoundListAdapter, which abstracts all the ViewHolder code.
  */
-//class RecipeListAdapter :
-//    ListAdapter<Recipe, RecipeListAdapter.AdapterViewHolder>(DiffCallback())
 class RecipeListAdapter(
     private val dataBindingComponent: DataBindingComponent,
     appExecutors: AppExecutors,

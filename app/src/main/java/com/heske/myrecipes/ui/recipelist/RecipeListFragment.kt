@@ -52,11 +52,16 @@ class RecipeListFragment : Fragment(), Injectable {
 
     lateinit var recipeListViewModel: RecipeListViewModel
 
-    // autoCleared is Google's generic memory management class.
-    // I don't completely understand when to use it, but it seems to make sense.
-    // TODO Perhaps a memory profiler would help to understand this.
+   /*
+    * autoCleared is Google's generic memory management class.
+    * I don't completely understand when to use it, but it seems to make sense.
+    * TODO Perhaps a memory profiler would help to understand this.
+    */
     var binding by autoCleared<FragmentRecipeListBinding>()
     var adapter by autoCleared<RecipeListAdapter>()
+
+    var dataBindingComponent: DataBindingComponent
+            = FragmentDataBindingComponent(this)
 
     /*
      * navArgs() is Google's convenient way to access params passed into the Fragment.
@@ -66,8 +71,6 @@ class RecipeListFragment : Fragment(), Injectable {
      * that the required arguments are present.
      */
     private val params by navArgs<RecipeListFragmentArgs>()
-
-    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,6 +94,8 @@ class RecipeListFragment : Fragment(), Injectable {
 
         recipeListViewModel.runQuery(params.query)
 
+        // args is defined in fragment_recipe_list.xml
+        // TODO can I make use of it?
         binding.args = params
 
         binding.setLifecycleOwner(viewLifecycleOwner)
@@ -103,7 +108,7 @@ class RecipeListFragment : Fragment(), Injectable {
         ) { recipe ->
             findNavController().navigate(
                 RecipeListFragmentDirections
-                    .actionRecipeListToRecipe(recipe)
+                    .actionRecipeListToRecipe(recipe.recipe_id)
             )
         }
         binding.recipeListRecyler.adapter = recipeListAdapter
@@ -120,8 +125,7 @@ class RecipeListFragment : Fragment(), Injectable {
             Log.d(TAG, "New recipe list!!")
             if (listResource.data != null) {
                 adapter.submitList(listResource?.data)
-            }
-            else {
+            } else {
                 adapter.submitList(emptyList())
             }
         })

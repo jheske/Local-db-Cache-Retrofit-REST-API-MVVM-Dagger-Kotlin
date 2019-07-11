@@ -8,6 +8,7 @@ import com.heske.myrecipes.persistence.RecipeDao
 import com.heske.myrecipes.persistence.RecipeDatabase
 import com.heske.myrecipes.persistence.RecipeSearchResult
 import com.heske.myrecipes.requests.RecipeApi
+import com.heske.myrecipes.requests.responses.ApiResponse
 import com.heske.myrecipes.requests.responses.RecipeResponse
 import com.heske.myrecipes.requests.responses.RecipeSearchResponse
 import com.heske.myrecipes.util.*
@@ -48,12 +49,12 @@ class RecipeRepository @Inject constructor(
     /**
      * Download one recipe.
      */
-    fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>>   {  //fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>> {
+    fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>> {  //fun searchRecipesApi(recipeId: String): LiveData<Resource<Recipe>> {
         return object : NetworkBoundResource<Recipe, RecipeResponse>(appExecutors) {
             // Called after download completes to insert downloaded
             // data into the database.
             override fun saveCallResult(item: RecipeResponse) {
-                // will be null if API key is expired
+                // will be null if API key is expired (or request limit reached??)
                 if (item.recipe != null) {
                     item.recipe.timestamp = (System.currentTimeMillis() / 1000).toInt()
                     recipeDao.insertRecipe(item.recipe)
@@ -61,15 +62,21 @@ class RecipeRepository @Inject constructor(
             }
 
             // true = there's no data, should fetch it from the Network
-            override fun shouldFetch(data: Recipe?) = data == null
+            override fun shouldFetch(data: Recipe?): Boolean {
+                val fetchRecipe = data == null
+                return fetchRecipe
+            }
 
-            override fun loadFromDb() = recipeDao.getRecipe(
-                recipe_id = recipeId
-            )
+            override fun loadFromDb() : LiveData<Recipe> {
+                val recipe = recipeDao.getRecipe(recipe_id = recipeId)
+                return recipe
+            }
 
             // Make the network call to get the data
-            override fun createCall()
-                    = recipeApi.getRecipe(API_KEY, recipeId)
+            override fun createCall() : LiveData<ApiResponse<RecipeResponse>> {
+                val response = recipeApi.getRecipe(API_KEY, recipeId)
+                return response
+            }
         }.asLiveData()
     }
 
@@ -126,6 +133,7 @@ class RecipeRepository @Inject constructor(
                     Log.d(TAG, "[saveCallResult] searchRowId: $searchResultsRowId")
                 }
             }
+
             // true = there's no data, should fetch it from the Network
             override fun shouldFetch(data: List<Recipe>?) = true
 

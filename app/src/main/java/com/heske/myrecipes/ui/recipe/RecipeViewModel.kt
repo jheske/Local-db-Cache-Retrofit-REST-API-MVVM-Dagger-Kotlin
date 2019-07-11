@@ -40,6 +40,7 @@ class RecipeViewModel @Inject constructor(recipeRepository: RecipeRepository) : 
     val recipeId: LiveData<RecipeId>
         get() = _recipeId
 
+
     // Gotta observe recipe LiveData (in the Fragment), or the switchmap will
     // never be triggered, even when _recipeId.value is set.
     val recipe: LiveData<Resource<Recipe>> = Transformations

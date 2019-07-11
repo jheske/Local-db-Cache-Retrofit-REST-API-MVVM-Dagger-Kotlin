@@ -8,10 +8,11 @@
                 name="recipe"
                 type="com.heske.myrecipes.models.Recipe"/>
     </data>
+
     <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/card_view"
             app:cardUseCompatPadding="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,32 +25,32 @@
 
             <ImageView
                     android:id="@+id/recipe_image"
+                    app:recipeImageUrl="@{recipe.image_url}"
+                    android:contentDescription="@{recipe.title}"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/recipe_image_height"
                     android:scaleType="centerCrop"
-                    android:contentDescription="@{recipe.title}"
                     android:src="@drawable/ic_launcher_background"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:recipeListItemImageUrl="@{recipe.image_url}"
                     tools:src="@drawable/brunch"/>
 
             <TextView
                     android:id="@+id/recipe_title"
+                    android:text="@{recipe.title}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/recipe_title_text_size"
                     android:textColor="#000"
-                    android:text="@{recipe.title}"
                     app:layout_constraintTop_toBottomOf="@+id/recipe_image"
                     app:layout_constraintLeft_toLeftOf="parent"/>
 
             <TextView
                     android:id="@+id/recipe_publisher"
+                    android:text="@{recipe.title}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="90"
                     android:textSize="@dimen/recipe_publisher_text_size"
-                    android:text="@{recipe.title}"
                     app:layout_constraintTop_toBottomOf="@+id/recipe_title"
                     app:layout_constraintLeft_toLeftOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>

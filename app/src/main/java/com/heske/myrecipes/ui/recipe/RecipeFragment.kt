@@ -5,17 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil.inflate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
-import com.heske.myrecipes.AppExecutors
+import androidx.navigation.fragment.navArgs
 import com.heske.myrecipes.R
+import com.heske.myrecipes.binding.FragmentDataBindingComponent
 import com.heske.myrecipes.databinding.FragmentRecipeBinding
 import com.heske.myrecipes.di.Injectable
 import com.heske.myrecipes.util.TAG
+import com.heske.myrecipes.util.autoCleared
 import javax.inject.Inject
 
 
@@ -46,40 +48,53 @@ class RecipeFragment() : Fragment(), Injectable {
 
     private lateinit var recipeViewModel: RecipeViewModel
 
-    @Inject
-    lateinit var appExecutors: AppExecutors
+    // lateinit var binding: FragmentRecipeBinding
+    // autoCleared is Google's generic memory management class.
+    // I don't completely understand when to use it, but it seems to make sense.
+    // TODO Perhaps a memory profiler would help to understand this.
+    var binding by autoCleared<FragmentRecipeBinding>()
 
-    lateinit var binding: FragmentRecipeBinding
+    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
+
+    /*
+     * navArgs() is Google's convenient way to access params passed into the Fragment.
+     * Google strongly recommends that the navArgs() method be used only when the
+     * Fragment is created by [androidx.navigation.NavController.navigate] with
+     * the corresponding [androidx.navigation.NavDirections] object, which ensures
+     * that the required arguments are present.
+     */
+    private val params by navArgs<RecipeFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil
-            .inflate(
-                inflater,
-                R.layout.fragment_recipe,
-                container,
-                false
-            )
-        recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(RecipeViewModel::class.java)
-        binding.setLifecycleOwner(viewLifecycleOwner)
-        binding.recipe = recipeViewModel.recipe
-        // Gotta observe the LiveData, or its switchmap in the viewModel will
-        // never be triggered, even when its value changes.
-        recipeViewModel.recipe.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG,"recipeId value has changed!!")
-        })
+        val dataBinding = inflate<FragmentRecipeBinding>(
+            inflater,
+            R.layout.fragment_recipe,
+            container,
+            false,
+            dataBindingComponent
+        )
+        binding = dataBinding
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recipeViewModel.setRecipeId(getString(R.string.txt_test_recipe_id))
+        recipeViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(RecipeViewModel::class.java)
+
+        recipeViewModel.setRecipeId(params.recipeId)
+        binding.recipe = recipeViewModel.recipe
+        binding.setLifecycleOwner(viewLifecycleOwner)
+        subscribeOvserver()
     }
 
-    /**
-     * Created to be able to override in tests
-     */
-    fun navController() = findNavController()
+    private fun subscribeOvserver() {
+        recipeViewModel.recipe.observe(viewLifecycleOwner, Observer { recipe ->
+            recipe?.data?.let {
+                Log.d(TAG, "new recipe ${it.recipe_id}")
+            }
+        })
+    }
 }

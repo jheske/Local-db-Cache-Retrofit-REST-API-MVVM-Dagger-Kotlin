@@ -7,12 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.databinding.DataBindingComponent
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.heske.myrecipes.AppExecutors
+import com.heske.myrecipes.R
+import com.heske.myrecipes.binding.FragmentDataBindingComponent
 import com.heske.myrecipes.databinding.FragmentCategoryListBinding
 import com.heske.myrecipes.di.Injectable
+import com.heske.myrecipes.util.autoCleared
 import javax.inject.Inject
 
 /* Copyright (c) 2019 Jill Heske All rights reserved.
@@ -49,34 +55,53 @@ class CategoryListFragment : Fragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var categoryListViewModel: CategoryListViewModel
-
     @Inject
     lateinit var appExecutors: AppExecutors
 
-    lateinit var binding: FragmentCategoryListBinding
+    lateinit var categoryListViewModel: CategoryListViewModel
+
+    var binding by autoCleared<FragmentCategoryListBinding>()
+    var adapter by autoCleared<CategoryListAdapter>()
+
+    var dataBindingComponent: DataBindingComponent
+            = FragmentDataBindingComponent(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentCategoryListBinding.inflate(inflater)
-
-        categoryListViewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(CategoryListViewModel::class.java)
-
-        binding.categoryListRecyler.adapter = CategoryListAdapter()
-
-        binding.viewModel = categoryListViewModel
+        val dataBinding
+                = DataBindingUtil.inflate<FragmentCategoryListBinding>(
+            inflater,
+            R.layout.fragment_category_list,
+            container,
+            false,
+            dataBindingComponent
+        )
+        binding = dataBinding
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        categoryListViewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(CategoryListViewModel::class.java)
+        binding.viewModel = categoryListViewModel
 
-    }
+        binding.setLifecycleOwner(viewLifecycleOwner)
 
-    private fun getList() {
-
+        // Syntax is kinda convoluted. Pass the onClick handler
+        // to adapter as a parameter, which binds it in createBinding().
+        val categoryListAdapter = CategoryListAdapter(
+            dataBindingComponent,appExecutors
+        ) { category ->
+            findNavController().navigate(
+                CategoryListFragmentDirections
+                    .actionCategoryListToRecipeList(category.title)
+            )
+        }
+        binding.categoryListRecyler.adapter = categoryListAdapter
+        this.adapter = categoryListAdapter
+        //subscribeOvserver()
     }
 
     private fun dismissKeyboard(windowToken: IBinder) {

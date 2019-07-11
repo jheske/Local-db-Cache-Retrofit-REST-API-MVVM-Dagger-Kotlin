@@ -4,9 +4,6 @@
         xmlns:tools="http://schemas.android.com/tools">
 
 <data>
-    <variable
-            name="clickListener"
-            type="android.view.View.OnClickListener"/>
     <!-- The user can click on a category or type in a search query.
     They're both strings and are used to fetch a list of Recipes -->
     <variable
@@ -17,7 +14,6 @@
 <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{clickListener}"
         app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,23 +23,25 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
+        <!---->
+
         <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/category_image"
+                app:categoryImageUri="@{category.image_uri}"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 tools:src="@drawable/beef"
-                app:categoryListItemImageUrl="@{category.image_url}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
         <TextView
                 android:id="@+id/category_title"
+                android:text="@{category.title}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
                 android:layout_marginStart="20dp"
                 android:textSize="20sp"
-                android:text="@{category.title}"
                 app:layout_constraintLeft_toRightOf="@+id/category_image"
                 app:layout_constraintTop_toTopOf="@+id/category_image"
                 app:layout_constraintBottom_toBottomOf="@+id/category_image"/>

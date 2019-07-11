@@ -26,6 +26,7 @@ import android.net.Uri
 data class Category(
     val title: String
 ) {
-    val image_url
-            = Uri.parse("android.resource://com.codingwithmitch.foodrecipes/drawable/${title.toLowerCase()}")
+    val image_uri
+            = Uri.parse("android.resource://com.heske.myrecipes/drawable/${title.toLowerCase()}")
+          //  = Uri.parse("android.resource://com.codingwithmitch.foodrecipes/drawable/${title.toLowerCase()}")
 }

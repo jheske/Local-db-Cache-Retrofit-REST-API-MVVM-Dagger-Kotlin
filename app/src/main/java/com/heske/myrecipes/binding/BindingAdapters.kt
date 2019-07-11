@@ -1,11 +1,7 @@
 package com.heske.myrecipes.binding
 
-import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.heske.myrecipes.R
 import com.heske.myrecipes.models.Category
 import com.heske.myrecipes.ui.categorylist.CategoryListAdapter
 
@@ -36,28 +32,28 @@ fun bindCategoryListRecyclerData(recyclerView: RecyclerView, data: List<Category
     adapter.submitList(data)
 }
 
-@BindingAdapter("categoryListItemImageUrl")
-fun bindCategoryListItemImageUrl(imgView: ImageView, imageUrl: android.net.Uri?) {
-    imageUrl?.let {
-        Glide.with(imgView.context)
-            .load(imageUrl)
-            .apply(
-                RequestOptions()
-                    .error(R.drawable.barbeque)
-            )
-            .into(imgView)
-    }
-}
-
-@BindingAdapter("recipeListItemImageUrl")
-fun bindRecipeListItemImageUrl(imgView: ImageView, imageUrl: String?) {
-    imageUrl?.let {
-        Glide.with(imgView.context)
-            .load(imageUrl)
-            .apply(
-                RequestOptions()
-                    .error(R.drawable.barbeque)
-            )
-            .into(imgView)
-    }
-}
+//@BindingAdapter("categoryListItemImageUrl")
+//fun bindCategoryListItemImageUrl(imgView: ImageView, imageUrl: android.net.Uri?) {
+//    imageUrl?.let {
+//        Glide.with(imgView.context)
+//            .load(imageUrl)
+//            .apply(
+//                RequestOptions()
+//                    .error(R.drawable.barbeque)
+//            )
+//            .into(imgView)
+//    }
+//}
+//
+//@BindingAdapter("recipeListItemImageUrl")
+//fun bindRecipeListItemImageUrl(imgView: ImageView, imageUrl: String?) {
+//    imageUrl?.let {
+//        Glide.with(imgView.context)
+//            .load(imageUrl)
+//            .apply(
+//                RequestOptions()
+//                    .error(R.drawable.barbeque)
+//            )
+//            .into(imgView)
+//    }
+//}
